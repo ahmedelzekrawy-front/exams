@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Comprehensive IT Exam Simulator (50 Shuffled MCQs)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons for premium look -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Cairo for Arabic, Inter for English) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', 'Cairo', sans-serif;
+            background-color: #f0f4f8; /* Distinct soft cool background to make boxes pop out */
+            -webkit-tap-highlight-color: transparent;
+        }
+        .arabic-text {
+            font-family: 'Cairo', sans-serif;
+            direction: rtl;
+            text-align: right;
+        }
+        .english-text {
+            font-family: 'Inter', sans-serif;
+            direction: ltr;
+            text-align: left;
+        }
+        /* Custom smooth transition for hover effects */
+        .option-card {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        /* Style for the floating remembrance bubble */
+        #dhikr-bubble {
+            animation: bounceSlow 3.5s infinite ease-in-out;
+            z-index: 999;
+        }
+        @keyframes bounceSlow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        /* Custom scrollbar for better visual quality */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="text-slate-900 antialiased selection:bg-indigo-100 flex flex-col min-h-screen">
+
+    <!-- Top Premium Navbar (Perfectly Responsive) -->
+    <header class="sticky top-0 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm z-50">
+        <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2 sm:gap-3 overflow-hidden">
+                <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-200 shrink-0">
+                    <i class="fa-solid fa-ranking-star text-base sm:text-xl"></i>
+                </div>
+                <div class="truncate">
+                    <h1 class="font-extrabold text-sm sm:text-lg text-slate-900 tracking-tight leading-tight truncate">IT Final Simulator</h1>
+                    <span class="text-[10px] sm:text-xs text-indigo-600 font-bold uppercase tracking-wider block sm:inline">50 MCQs • Randomly Shuffled</span>
+                </div>
+            </div>
+            <!-- Progress Pill -->
+            <div class="bg-indigo-50 border-2 border-indigo-100 rounded-full px-3 py-1 sm:px-4 sm:py-1.5 flex items-center gap-1.5 shrink-0">
+                <span class="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-pulse"></span>
+                <span class="text-xs sm:text-sm font-extrabold text-indigo-700 arabic-text" id="progress-text">تم حل 0 من 50</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container (Full Width on Desktop, Highly Responsive on iPhone X) -->
+    <main class="w-full max-w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 flex-1">
+        
+        <!-- Welcome banner & Quick Statistics -->
+        <div class="bg-white rounded-2xl border-2 border-indigo-100 p-5 sm:p-6 md:p-8 mb-6 shadow-md">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                <div class="space-y-3">
+                    <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight arabic-text">كويز المراجعة النهائية العشوائي 🎲</h2>
+                    <p class="text-slate-700 text-sm sm:text-base md:text-lg leading-relaxed arabic-text">
+                        تتغير أماكن وترتيب الأسئلة في كل مرة تقوم فيها بفتح الصفحة أو إعادة التشغيل لتوفير تجربة اختبار حقيقية وممتازة! تشمل الأسئلة معالجة الصور الرقمية، والتعرف على الأنماط، والأمن السيبراني، وإدارة المخاطر.
+                    </p>
+                </div>
+                <!-- Stats Grid - Perfect for Mobile & Desktop -->
+                <div class="grid grid-cols-3 gap-2 sm:gap-4 w-full lg:w-auto shrink-0">
+                    <div class="bg-indigo-50/50 p-3 sm:p-4 rounded-xl border border-indigo-100 shadow-sm text-center">
+                        <span class="block text-2xl sm:text-3xl font-black text-emerald-600" id="stat-correct">0</span>
+                        <span class="text-[10px] sm:text-xs text-slate-600 font-extrabold arabic-text block mt-1">إجابة صحيحة</span>
+                    </div>
+                    <div class="bg-rose-50/50 p-3 sm:p-4 rounded-xl border border-rose-100 shadow-sm text-center">
+                        <span class="block text-xl sm:text-3xl font-black text-rose-600" id="stat-wrong">0</span>
+                        <span class="text-[10px] sm:text-xs text-slate-600 font-extrabold arabic-text block mt-1">إجابة خاطئة</span>
+                    </div>
+                    <div class="bg-slate-100 p-3 sm:p-4 rounded-xl border border-slate-200 shadow-sm text-center">
+                        <span class="block text-xl sm:text-3xl font-black text-indigo-600" id="stat-score">0%</span>
+                        <span class="text-[10px] sm:text-xs text-slate-600 font-extrabold arabic-text block mt-1">النسبة الكلية</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Action Area -->
+            <div class="mt-4 sm:mt-6 flex justify-between items-center flex-wrap gap-3 border-t border-slate-200/60 pt-4">
+                <span class="text-xs sm:text-sm font-bold text-slate-500 arabic-text" id="visible-count">50 سؤالاً تم خلط ترتيبها تلقائياً بالكامل</span>
+                <button onclick="resetExam()" class="flex items-center justify-center gap-2 px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 shadow-md hover:shadow-lg">
+                    <i class="fa-solid fa-shuffle"></i>
+                    <span class="arabic-text">إعادة تصفير وخلط الأسئلة من جديد</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Questions Container (Full width on large screens, mobile optimized) -->
+        <div class="space-y-6" id="questions-container">
+            <!-- Questions will be dynamically loaded here by JS -->
+        </div>
+
+    </main>
+
+    <!-- Footer space for padding bottom on mobile devices to prevent bubble overlap -->
+    <div class="h-24"></div>
+
+    <!-- Remembrance Floating Bubble (Dhikr) - Fixed layout issues on mobile (iPhone X safe) -->
+    <div id="dhikr-bubble" class="fixed bottom-4 right-4 left-4 sm:left-auto sm:right-6 flex items-center gap-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-xl shadow-xl hover:scale-[1.02] active:scale-95 transition-transform duration-200 cursor-pointer max-w-none sm:max-w-sm border border-emerald-400">
+        <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-mosque text-lg"></i>
+        </div>
+        <div class="flex-1 min-w-0">
+            <p class="text-[10px] font-bold uppercase tracking-wider text-emerald-100 arabic-text">ذكر ودعاء مستحب 🌸</p>
+            <p class="font-extrabold text-sm sm:text-base leading-snug arabic-text truncate" id="dhikr-text">اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ</p>
+        </div>
+        <button onclick="dismissDhikr(event)" class="text-emerald-100 hover:text-white bg-white/10 hover:bg-white/20 w-7 h-7 rounded-lg flex items-center justify-center transition-colors shrink-0">
+            <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+    </div>
+
+    <!-- Main JavaScript Code -->
+    <script>
+        // Array of Dhikr messages to cycle through
+        const dhikrMessages = [
+            "اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ",
+            "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ ، سُبْحَانَ اللَّهِ الْعَظِيمِ",
+            "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ الْعَلِيِّ الْعَظِيمِ",
+            "لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ",
+            "أَسْتَغْفِرُ اللَّهَ الْعَظِيمَ الَّذِي لَا إِلَٰهَ إِلَّا هُوَ وَأَتُوبُ إِلَيْهِ",
+            "الْحَمْدُ لِلَّهِ حَمْدًا كَثِيرًا طَيِّبًا مُبَارَكًا فِيهِ",
+            "يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ أَصْلِحْ لِي شَأْنِي كُلَّهُ"
+        ];
+
+        // 50 Questions: 20 DIP (Old Exams) + 30 New generated from text (PR, Cyber, Security)
+        const questionsData = [
+            // --- Part 1: Digital Image Processing (Extracted) ---
+            {
+                id: 1,
+                question: "A pixel holds _________ information.",
+                options: { a: "Intensity", b: "Color", c: "Size", d: "All of these" },
+                correct: "d",
+                arabicQuestion: "يحتوي البكسل (pixel) على معلومات الـ _________.",
+                explanation: "البكسل <span class='font-bold text-indigo-700'>Pixel</span> يحمل معلومات السطوع والشدة، واللون، وحجم العنصر تمثيلياً، فالإجابة هي كل ما سبق."
+            },
+            {
+                id: 2,
+                question: "Dynamic range of imaging system is a ratio where the upper limit is determined by _________.",
+                options: { a: "Saturation", b: "Noise", c: "Contrast", d: "Resolution" },
+                correct: "a",
+                arabicQuestion: "النطاق الديناميكي (Dynamic range) هو نسبة يتم فيها تحديد الحد الأقصى بواسطة _________.",
+                explanation: "الحد الأقصى للنطاق الديناميكي يتم تحديده بواسطة التشبع <span class='font-bold text-indigo-700'>Saturation</span>، بينما الحد الأدنى يتم تحديده بالضوضاء."
+            },
+            {
+                id: 3,
+                question: "For Dynamic range ratio the lower limit is determined by _________.",
+                options: { a: "Saturation", b: "Noise", c: "Contrast", d: "None of these" },
+                correct: "b",
+                arabicQuestion: "في النطاق الديناميكي، الحد الأدنى (Lower Limit) يتم تحديده بواسطة _________.",
+                explanation: "الحد الأدنى الذي يحدد أقل إشارة يمكن للنظام رصدها هو الضوضاء <span class='font-bold text-indigo-700'>Noise</span>."
+            },
+            {
+                id: 4,
+                question: "A basic image is represented in _________ dimensions.",
+                options: { a: "1D", b: "2D", c: "3D", d: "4D" },
+                correct: "b",
+                arabicQuestion: "يتم تمثيل الصورة الأساسية (Basic Image) في أبعاد ثنائية تشمل _________.",
+                explanation: "تُمثل الصورة الرقمية الأساسية كدالة ثنائية الأبعاد <span class='font-bold text-indigo-700'>2D function f(x, y)</span>."
+            },
+            {
+                id: 5,
+                question: "The difference in intensity between the highest and the lowest intensity levels in an image is _________.",
+                options: { a: "Noise", b: "Saturation", c: "Contrast", d: "None of these" },
+                correct: "c",
+                arabicQuestion: "الفارق في شدة الإضاءة بين أعلى مستوى للسطوع وأقل مستوى له يُعرف بـ _________.",
+                explanation: "التباين <span class='font-bold text-indigo-700'>Contrast</span> يصف الفارق بين المناطق الأكثر سطوعاً والأكثر عتمة في الصورة."
+            },
+            {
+                id: 6,
+                question: "RGB type image comprises of _________ colors.",
+                options: { a: "Red, Green, Blue", b: "Red, Grey, Black", c: "Red, Grey, Brown", d: "None of these" },
+                correct: "a",
+                arabicQuestion: "تتكون الصور من نوع RGB من مزيج من الألوان: _________.",
+                explanation: "نموذج الألوان الأساسي يعتمد على: الأحمر <span class='font-bold text-indigo-700'>Red</span>، الأخضر <span class='font-bold text-indigo-700'>Green</span>، والأزرق <span class='font-bold text-indigo-700'>Blue</span>."
+            },
+            {
+                id: 7,
+                question: "If the pixel value is '0' then it represents _________ color.",
+                options: { a: "White", b: "Black", c: "Red", d: "Gray" },
+                correct: "b",
+                arabicQuestion: "إذا كانت قيمة البكسل تساوي صفر '0'، فإن ذلك يمثل اللون _________.",
+                explanation: "في أنظمة الصور الرقمية، تشير القيمة '0' للغياب التام للضوء وهو اللون الأسود <span class='font-bold text-indigo-700'>Black</span>."
+            },
+            {
+                id: 8,
+                question: "If the pixel value is '1' in a binary image, then it represents _________ color.",
+                options: { a: "White", b: "Black", c: "Red", d: "Gray" },
+                correct: "a",
+                arabicQuestion: "إذا كانت قيمة البكسل تساوي واحد '1' (في الصورة الثنائية)، يمثل ذلك اللون _________.",
+                explanation: "في الصور الثنائية <span class='font-bold text-indigo-700'>Binary Images</span>، يمثل الرقم '1' السطوع الكامل الفردي ويرمز للأبيض <span class='font-bold text-indigo-700'>White</span>."
+            },
+            {
+                id: 9,
+                question: "The transition between continuous values of the image function and its digital equivalent is called _________.",
+                options: { a: "Quantization", b: "Sampling", c: "Coloring", d: "None of these" },
+                correct: "a",
+                arabicQuestion: "التحول بين القيم المستمرة لدالة الصورة (السعة) وقيمها الرقمية المحددة يُدعى _________.",
+                explanation: "التكميم <span class='font-bold text-indigo-700'>Quantization</span> هو رقمنة قيم السعة (الشدة الضوئية) الموصولة لتصبح منفصلة."
+            },
+            {
+                id: 10,
+                question: "In 4-neighbours of a pixel p, how far are each of the neighbours located from p?",
+                options: { a: "One pixel apart", b: "Two pixels apart", c: "Three pixels apart", d: "None of these" },
+                correct: "a",
+                arabicQuestion: "في الجيران الأربعة (4-neighbours) للبكسل، ما هي المسافة التي تفصل كل جار عن البكسل p الأصلي؟",
+                explanation: "يقع كل جار على بعد مسافة بكسل واحد فقط <span class='font-bold text-indigo-700'>One pixel apart</span> من المركز."
+            },
+            {
+                id: 11,
+                question: "The smallest element of a digital image is:",
+                options: { a: "Frame", b: "Pixel", c: "Object", d: "Segment" },
+                correct: "b",
+                arabicQuestion: "أصغر عنصر مكون للصورة الرقمية هو:",
+                explanation: "البكسل <span class='font-bold text-indigo-700'>Pixel</span> هو أصغر عنصر هيكلي يمثل قيمة إضاءة الصورة."
+            },
+            {
+                id: 12,
+                question: "A binary image contains:",
+                options: { a: "256 gray levels", b: "RGB colors", c: "Only black and white", d: "24-bit colors" },
+                correct: "c",
+                arabicQuestion: "تحتوي الصورة الثنائية (Binary Image) على:",
+                explanation: "الصورة الثنائية تمتلك قيمتين فقط (0 و 1)، وتمثل الأبيض والأسود فقط <span class='font-bold text-indigo-700'>Only black and white</span>."
+            },
+            {
+                id: 13,
+                question: "A grayscale image typically ranges from:",
+                options: { a: "0 to 1", b: "0 to 255", c: "1 to 1024", d: "0 to 1024" },
+                correct: "b",
+                arabicQuestion: "يتراوح نطاق قيم مستويات الرمادي في الصور (Grayscale) عادة من:",
+                explanation: "تتكون صور الرمادي من 8 بتات، مما يعطي 256 مستوى تبدأ من 0 حتى <span class='font-bold text-indigo-700'>255</span>."
+            },
+            {
+                id: 14,
+                question: "Low-level processing produces:",
+                options: { a: "Attributes", b: "Understanding", c: "Another image", d: "Classes" },
+                correct: "c",
+                arabicQuestion: "عمليات المعالجة منخفضة المستوى (Low-level processing) تنتج:",
+                explanation: "المعالجة منخفضة المستوى تنتج دائماً صورة جديدة كتحسين للصورة الأصلية <span class='font-bold text-indigo-700'>Another image</span>."
+            },
+            {
+                id: 15,
+                question: "Segmentation belongs to:",
+                options: { a: "Low-level processing", b: "Mid-level processing", c: "High-level processing", d: "Computer graphics" },
+                correct: "b",
+                arabicQuestion: "تنتمي عملية تقسيم وتجزئة الصورة (Segmentation) إلى:",
+                explanation: "التقسيم أو التجزئة ينتمي للعمليات متوسطة المستوى <span class='font-bold text-indigo-700'>Mid-level processing</span> لأن المخرجات تكون صفات وحدود."
+            },
+            {
+                id: 16,
+                question: "Scene understanding belongs to:",
+                options: { a: "Mid-level", b: "Low-level", c: "High-level", d: "Sampling" },
+                correct: "c",
+                arabicQuestion: "عملية فهم المشهد بصرياً وتحليله تنتمي إلى:",
+                explanation: "فهم المشاهد بصرياً يتطلب ذكاءً، وينتمي للمعالجة عالية المستوى <span class='font-bold text-indigo-700'>High-level processing</span>."
+            },
+            {
+                id: 17,
+                question: "Noise in an image means:",
+                options: { a: "Useful information", b: "Random unwanted information", c: "Image boundary", d: "Compression" },
+                correct: "b",
+                arabicQuestion: "تعني الضوضاء (Noise) في الصورة:",
+                explanation: "الضوضاء هي إشارات عشوائية غير مرغوبة <span class='font-bold text-indigo-700'>Random unwanted information</span> تشوه جودة الصورة."
+            },
+            {
+                id: 18,
+                question: "Edge detection is used to obtain:",
+                options: { a: "Noise", b: "Image storage", c: "Object boundaries", d: "Intensity levels" },
+                correct: "c",
+                arabicQuestion: "يُاستخدم كشف الحواف (Edge detection) للحصول على:",
+                explanation: "كشف الحواف يستخدم لاستخراج وتحديد حدود الأجسام <span class='font-bold text-indigo-700'>Object boundaries</span> داخل الصورة."
+            },
+            {
+                id: 19,
+                question: "Sampling digitizes:",
+                options: { a: "Intensity values", b: "Spatial coordinates", c: "Colors only", d: "Objects" },
+                correct: "b",
+                arabicQuestion: "تقوم عملية أخذ العينات (Sampling) برقمنة:",
+                explanation: "تعمل الـ <span class='font-bold text-indigo-700'>Sampling</span> على رقمنة الإحداثيات المكانية (x, y) للصورة."
+            },
+            {
+                id: 20,
+                question: "Image enhancement aims to:",
+                options: { a: "Reduce storage only", b: "Improve image quality", c: "Destroy image details", d: "Increase noise" },
+                correct: "b",
+                arabicQuestion: "تهدف عملية تحسين الصور (Image enhancement) إلى:",
+                explanation: "هدف عملية التحسين هو الرفع من جودة الصورة لتصبح أوضح ومناسبة للتحليل <span class='font-bold text-indigo-700'>Improve image quality</span>."
+            },
+
+            // --- Part 2: Pattern Recognition (Generated from Text) ---
+            {
+                id: 21,
+                question: "Pattern recognition is a data analysis method that uses _________ algorithms to automatically recognize patterns.",
+                options: { a: "Routing", b: "Image Compression", c: "Machine Learning", d: "Hardware" },
+                correct: "c",
+                arabicQuestion: "التعرف على الأنماط يعتمد على خوارزميات الـ _________ للتعرف التلقائي على الأنماط.",
+                explanation: "تعتمد أنظمة الـ Pattern Recognition بشكل مباشر على خوارزميات التعلم الآلي <span class='font-bold text-indigo-700'>Machine Learning</span> لتصنيف وتمييز البيانات."
+            },
+            {
+                id: 22,
+                question: "A set of patterns sharing common attributes is called a:",
+                options: { a: "Class", b: "Pixel", c: "Topology", d: "Network" },
+                correct: "a",
+                arabicQuestion: "مجموعة الأنماط التي تتشارك في خصائص وسمات مشتركة تسمى بـ:",
+                explanation: "تُعرف المجموعة التي تتشابه في خصائصها بـ الفئة <span class='font-bold text-indigo-700'>Pattern Class</span>."
+            },
+            {
+                id: 23,
+                question: "The task of identifying the class to which a pattern belongs is called:",
+                options: { a: "Segmentation", b: "Classification", c: "Quantization", d: "Routing" },
+                correct: "b",
+                arabicQuestion: "مهمة تحديد الفئة (Class) التي ينتمي إليها نمط معين تُدعى:",
+                explanation: "التصنيف <span class='font-bold text-indigo-700'>Classification</span> هو عملية ربط النمط المدخل بالفئة الصحيحة الخاصة به بناءً على التعلم السابق."
+            },
+            {
+                id: 24,
+                question: "The task of finding the discriminatory attributes to represent patterns is called:",
+                options: { a: "Pattern masking", b: "Image sensing", c: "Feature extraction", d: "Phishing" },
+                correct: "c",
+                arabicQuestion: "مهمة إيجاد السمات التمييزية لتمثيل الأنماط تُعرف بـ:",
+                explanation: "استخراج الميزات <span class='font-bold text-indigo-700'>Feature extraction/selection</span> هو خطوة البحث عن السمات الفارقة التي تساعد في التمييز بين الفئات."
+            },
+            {
+                id: 25,
+                question: "A type of classification where a training set with known class labels is used is called:",
+                options: { a: "Unsupervised learning", b: "Low-level processing", c: "Zero-day exploit", d: "Supervised learning" },
+                correct: "d",
+                arabicQuestion: "نوع التصنيف الذي يتم فيه استخدام مجموعة تدريب تحتوي على بيانات معلومة الفئة يُدعى:",
+                explanation: "التعلم الخاضع للإشراف <span class='font-bold text-indigo-700'>Supervised learning</span> يعتمد على بيانات تم تصنيفها مسبقاً (Training Data) لتعليم النظام."
+            },
+            {
+                id: 26,
+                question: "Which of the following is NOT an application of Pattern Recognition?",
+                options: { a: "Fingerprint identification", b: "DNA sequence identification", c: "Handwriting Recognition", d: "Power supply management" },
+                correct: "d",
+                arabicQuestion: "أي مما يلي لا يُعد من تطبيقات التعرف على الأنماط (Pattern Recognition)؟",
+                explanation: "تطبيقات التعرف على الأنماط تشمل البصمات وخط اليد والـ DNA، لكن إدارة إمدادات الطاقة <span class='font-bold text-indigo-700'>Power supply management</span> ليس منها."
+            },
+            {
+                id: 27,
+                question: "Building a machine that can observe the environment and make reasonable decisions to categorize patterns is known as:",
+                options: { a: "Cloud Computing", b: "Machine Perception", c: "Risk Management", d: "Disaster Recovery" },
+                correct: "b",
+                arabicQuestion: "بناء آلة قادرة على رصد البيئة واتخاذ قرارات لتصنيف الأنماط يُعرف بـ:",
+                explanation: "الإدراك الآلي <span class='font-bold text-indigo-700'>Machine Perception</span> هو جعل الآلة قادرة على رصد وملاحظة وتمييز الأشياء كالإنسان."
+            },
+
+            // --- Part 3: Cybersecurity (Generated from Text) ---
+            {
+                id: 28,
+                question: "Malicious software used to infiltrate and damage systems, steal data, or take control of devices is called:",
+                options: { a: "Malware", b: "Hardware", c: "Firmware", d: "Spyware only" },
+                correct: "a",
+                arabicQuestion: "البرمجيات الخبيثة المستخدمة لاختراق وتدمير الأنظمة وسرقة البيانات تسمى بشكل عام:",
+                explanation: "مصطلح <span class='font-bold text-indigo-700'>Malware</span> يجمع كل أنواع البرامج الضارة كالفيروسات وأحصنة طروادة وبرامج الفدية والتجسس."
+            },
+            {
+                id: 29,
+                question: "Cybercriminals use fraudulent emails or websites to trick individuals into revealing sensitive information. This is called:",
+                options: { a: "Cryptojacking", b: "Phishing", c: "DoS", d: "Tunneling" },
+                correct: "b",
+                arabicQuestion: "استخدام رسائل أو مواقع احتيالية لخداع الضحايا وجعلهم يفصحون عن بياناتهم يسمى:",
+                explanation: "الاصطياد الإلكتروني <span class='font-bold text-indigo-700'>Phishing</span> يعتمد على الخداع والتلاعب بالهندسة الاجتماعية لسرقة كلمات المرور والبيانات البنكية."
+            },
+            {
+                id: 30,
+                question: "An attack that floods a system or network with excessive traffic to overwhelm it and cause unavailability is:",
+                options: { a: "Denial-of-Service (DoS)", b: "Ransomware", c: "SQL Injection", d: "Man-in-the-Middle" },
+                correct: "a",
+                arabicQuestion: "الهجوم الذي يغرق النظام بحركة مرور هائلة لتعطيله وجعله غير متاح يُدعى:",
+                explanation: "هجوم حجب الخدمة <span class='font-bold text-indigo-700'>DoS</span> (أو الموزع DDoS) يعطل الخوادم بكثرة الطلبات الوهمية حتى تخرج عن الخدمة."
+            },
+            {
+                id: 31,
+                question: "Intercepting and altering communication between two parties without their knowledge is known as:",
+                options: { a: "Zero-day", b: "Credential Stuffing", c: "Man-in-the-Middle (MitM)", d: "Phishing" },
+                correct: "c",
+                arabicQuestion: "اعتراض وتعديل الاتصالات بين طرفين خفيةً ودون علمهما يُعرف بـ:",
+                explanation: "في هجوم <span class='font-bold text-indigo-700'>Man-in-the-Middle (MitM)</span>، يقف المخترق في المنتصف للتنصت على البيانات وتعديلها وسرقتها."
+            },
+            {
+                id: 32,
+                question: "Attackers encrypt the victim's files and demand a payment in exchange for restoring access. This is:",
+                options: { a: "Spyware", b: "Trojan", c: "SQL Injection", d: "Ransomware" },
+                correct: "d",
+                arabicQuestion: "تشفير ملفات الضحية والمطالبة بدفع فدية مالية مقابل فك التشفير يُسمى هجوم:",
+                explanation: "برمجيات الفدية <span class='font-bold text-indigo-700'>Ransomware</span> تشفر الأجهزة وتطالب بالمال، وإلا فقد يتم حذف البيانات للأبد."
+            },
+            {
+                id: 33,
+                question: "Attacks that target vulnerabilities that are unknown to the software vendor or have not yet been patched are:",
+                options: { a: "Advanced Persistent Threats", b: "Zero-Day Exploits", c: "Credential Stuffing", d: "Phishing" },
+                correct: "b",
+                arabicQuestion: "الهجمات التي تستهدف ثغرات مجهولة للمطور أو لم يتم إصدار تحديث أمني لها بعد هي:",
+                explanation: "ثغرة يوم الصفر <span class='font-bold text-indigo-700'>Zero-Day Exploits</span> هي هجوم يستغل الضعف قبل أن يعلم به صانع البرنامج أو يصدر له حلاً."
+            },
+            {
+                id: 34,
+                question: "Ensuring that software is free of vulnerabilities through secure coding practices, testing, and patching is the focus of:",
+                options: { a: "Application Security", b: "Network Security", c: "Physical Security", d: "Identity Management" },
+                correct: "a",
+                arabicQuestion: "تأمين البرمجيات وسد ثغراتها عبر كتابة الأكواد الآمنة والترقيع هو تخصص:",
+                explanation: "أمن التطبيقات <span class='font-bold text-indigo-700'>Application Security</span> يختص بحماية البرامج والتطبيقات نفسها من الثغرات البرمجية."
+            },
+            {
+                id: 35,
+                question: "Securing individual devices such as computers, smartphones, and tablets using antivirus programs is known as:",
+                options: { a: "Endpoint Security", b: "Cloud Security", c: "Disaster Recovery", d: "Network Security" },
+                correct: "a",
+                arabicQuestion: "تأمين الأجهزة الفردية والطرفية كالكمبيوتر والهواتف باستخدام برامج الحماية يسمى:",
+                explanation: "أمن نقاط النهاية <span class='font-bold text-indigo-700'>Endpoint Security</span> يهتم بحماية أجهزة المستخدمين الطرفية التي تتصل بالشبكة."
+            },
+
+            // --- Part 4: Computer Security, GDPR, Risk & Cloud (Generated from Text) ---
+            {
+                id: 36,
+                question: "The three fundamental principles of computer security (CIA Triad) are Confidentiality, Integrity, and:",
+                options: { a: "Availability", b: "Authenticity", c: "Authorization", d: "Accountability" },
+                correct: "a",
+                arabicQuestion: "مبادئ ثالوث الأمن (CIA Triad) هي: السرية، والسلامة، والـ:",
+                explanation: "مبدأ التوافر <span class='font-bold text-indigo-700'>Availability</span> يضمن بقاء النظام والبيانات متاحة للعمل ومتاحة للمستخدمين المصرح لهم عند الحاجة."
+            },
+            {
+                id: 37,
+                question: "Ensuring that sensitive information is accessible only to those authorized to have access is called:",
+                options: { a: "Confidentiality", b: "Integrity", b: "Availability", d: "Encryption" },
+                correct: "a",
+                arabicQuestion: "ضمان وصول المعلومات الحساسة للمصرح لهم فقط وعدم تسربها يُعرف بـ:",
+                explanation: "السرية <span class='font-bold text-indigo-700'>Confidentiality</span> تهدف إلى حماية البيانات من الوصول غير المصرح به وضمان الخصوصية."
+            },
+            {
+                id: 38,
+                question: "Protecting data from being altered or tampered with by unauthorized individuals is known as:",
+                options: { a: "Confidentiality", b: "Integrity", c: "Availability", d: "Redundancy" },
+                correct: "b",
+                arabicQuestion: "حماية البيانات من التعديل أو التلاعب من قبل أشخاص غير مصرح لهم يُعرف بـ:",
+                explanation: "السلامة أو النزاهة <span class='font-bold text-indigo-700'>Integrity</span> تعني الحفاظ على دقة وصحة البيانات كما هي دون أي تلاعب أو تخريب خارجي."
+            },
+            {
+                id: 39,
+                question: "A software program designed to detect, prevent, and remove malicious software is an:",
+                options: { a: "IDS", b: "Antivirus", c: "Firewall", d: "APT" },
+                correct: "b",
+                arabicQuestion: "برنامج مصمم لاكتشاف ومنع وإزالة البرمجيات الخبيثة هو:",
+                explanation: "مضاد الفيروسات <span class='font-bold text-indigo-700'>Antivirus</span> هو أداة أساسية تفحص الملفات وتحذف البرمجيات الخبيثة فورياً كـ Windows Defender."
+            },
+            {
+                id: 40,
+                question: "A security system that monitors and controls incoming and outgoing network traffic based on predefined rules is a:",
+                options: { a: "Firewall", b: "Ransomware", c: "Phishing", d: "VPN" },
+                correct: "a",
+                arabicQuestion: "نظام أمان يراقب ويتحكم في حركة مرور الشبكة الصادرة والواردة بناءً على قواعد محددة هو:",
+                explanation: "الجدار الناري <span class='font-bold text-indigo-700'>Firewall</span> يعمل كبوابة حراسة تمنع وتسمح بمرور البيانات للشبكة حسب قواعد الأمان المعدة سلفاً."
+            },
+            {
+                id: 41,
+                question: "An Intrusion Detection System (IDS) that monitors traffic on an entire network is called:",
+                options: { a: "NIDS", b: "HIDS", c: "PIDS", d: "AIDS" },
+                correct: "a",
+                arabicQuestion: "نظام كشف التسلل (IDS) المخصص لمراقبة حركة المرور على الشبكة بأكملها يسمى:",
+                explanation: "يشير الاختصار <span class='font-bold text-indigo-700'>NIDS</span> إلى Network-based IDS وهو مسؤول عن مراقبة الشبكة بالكامل وليس جهازاً واحداً."
+            },
+            {
+                id: 42,
+                question: "The General Data Protection Regulation (GDPR) is a legal framework for data protection in:",
+                options: { a: "The United States", b: "The European Union", c: "Asia", d: "Global" },
+                correct: "b",
+                arabicQuestion: "قانون الـ GDPR هو إطار قانوني وتنظيمي لحماية البيانات يُطبق أساساً في:",
+                explanation: "قانون <span class='font-bold text-indigo-700'>GDPR</span> تم تشريعه وتطبيقه لحماية خصوصية بيانات مواطني الاتحاد الأوروبي <span class='font-bold text-indigo-700'>The European Union (EU)</span>."
+            },
+            {
+                id: 43,
+                question: "In Risk Management, the potential for loss or damage when a threat exploits a vulnerability is defined as:",
+                options: { a: "Asset", b: "Mitigation", c: "Assessment", d: "Risk" },
+                correct: "d",
+                arabicQuestion: "في إدارة المخاطر، يُعرَّف احتمال الخسارة أو الضرر الناتج عن استغلال تهديد لثغرة معينة بأنه:",
+                explanation: "المخاطرة <span class='font-bold text-indigo-700'>Risk</span> هي النتيجة المحتملة والمباشرة لتقاطع التهديد الخارجي مع وجود ضعف داخلي."
+            },
+            {
+                id: 44,
+                question: "The formula for Risk is usually expressed as:",
+                options: { a: "Threat * Vulnerability", b: "Asset + Threat", c: "Threat / Vulnerability", d: "Asset * Vulnerability" },
+                correct: "a",
+                arabicQuestion: "تُكتب المعادلة الرياضية للمخاطرة (Risk) عادة على النحو التالي:",
+                explanation: "تُحسب المخاطرة كحاصل ضرب التهديد في الثغرة الأمنية <span class='font-bold text-indigo-700'>Risk = Threat * Vulnerability</span>."
+            },
+            {
+                id: 45,
+                question: "A weakness in a system that can be exploited by a threat is called a:",
+                options: { a: "Threat", b: "Vulnerability", c: "Risk", d: "Patch" },
+                correct: "b",
+                arabicQuestion: "الضعف أو الخلل في النظام والذي يمكن استغلاله يُطلق عليه:",
+                explanation: "الثغرة <span class='font-bold text-indigo-700'>Vulnerability</span> هي نقطة الضعف أو القصور الأمني الذي يُمكّن المخترقين من التسلل للنظام."
+            },
+            {
+                id: 46,
+                question: "Developing controls like antivirus and backups to reduce impact is part of:",
+                options: { a: "Risk Identification", b: "Risk Assessment", c: "Risk Mitigation", d: "Risk Monitoring" },
+                correct: "c",
+                arabicQuestion: "تطوير وسائل التحكم كالنسخ الاحتياطي ومضادات الفيروسات لتقليل التأثير يعتبر جزءاً من عملية:",
+                explanation: "تخفيف المخاطر <span class='font-bold text-indigo-700'>Risk Mitigation</span> هي الخطوة العملية التي يتم فيها أخذ الإجراءات للحد من آثار التهديدات والأخطار المحتملة."
+            },
+            {
+                id: 47,
+                question: "The shared responsibility model in Cloud Security means:",
+                options: { a: "CSP handles infrastructure, customer handles data", b: "CSP handles everything", c: "Customer handles everything", d: "No one is responsible" },
+                correct: "a",
+                arabicQuestion: "نموذج المسؤولية المشتركة في أمن السحاب (Cloud Security) يعني:",
+                explanation: "تتوزع المسؤولية؛ فمزود الخدمة CSP يحمي البنية التحتية والمعدات، بينما يجب على العميل حماية بياناته وإدارة صلاحياته <span class='font-bold text-indigo-700'>CSP handles infrastructure, customer handles data</span>."
+            },
+            {
+                id: 48,
+                question: "Which of the following is NOT a foundational principle of GDPR?",
+                options: { a: "Maximum Data Collection", b: "Storage Limitation", c: "Accuracy", d: "Integrity and Confidentiality" },
+                correct: "a",
+                arabicQuestion: "أي مما يلي لا يُعد من المبادئ الأساسية لقانون GDPR لحماية البيانات؟",
+                explanation: "قانون GDPR ينص على تقليل البيانات المجموعة <span class='font-bold text-indigo-700'>Data Minimization</span> وليس جمع الحد الأقصى للبيانات <span class='font-bold text-indigo-700'>Maximum Data Collection</span>."
+            },
+            {
+                id: 49,
+                question: "Which cloud security best practice involves ensuring users only have access to what they need based on their roles?",
+                options: { a: "DoS", b: "Cryptojacking", c: "IAM (Identity and Access Management)", d: "Malware" },
+                correct: "c",
+                arabicQuestion: "أي من ممارسات أمن السحاب يتضمن التأكد من إعطاء المستخدمين الصلاحيات التي يحتاجونها فقط؟",
+                explanation: "نظام إدارة الهوية والوصول <span class='font-bold text-indigo-700'>IAM</span> يختص بتحديد من له الحق في الدخول وإلى أي مدى، استناداً لدوره الوظيفي."
+            },
+            {
+                id: 50,
+                question: "Firewalls, VPNs, and Intrusion Detection Systems (IDS) are primarily components of:",
+                options: { a: "Physical Security", b: "Application Security", c: "Network Security", d: "Endpoint Security" },
+                correct: "c",
+                arabicQuestion: "تُعد الجدران النارية والـ VPN وأنظمة كشف التسلل مكونات أساسية لـ:",
+                explanation: "كل هذه الأدوات تعمل بشكل مباشر على حماية البيانات أثناء النقل وتأمين الشبكات فتندرج تحت أمن الشبكات <span class='font-bold text-indigo-700'>Network Security</span>."
+            }
+        ];
+
+        // Track user performance state
+        let userProgress = {};
+        // Shuffled questions order references
+        let shuffledQuestions = [];
+
+        // On document load
+        window.onload = function() {
+            resetAndShuffle();
+            initDhikrSystem();
+        }
+
+        // Shuffling Algorithm
+        function shuffleArray(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex !== 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        // Clear state and perform shuffle
+        function resetAndShuffle() {
+            userProgress = {};
+            // Deep copy to prevent mutating static original array
+            shuffledQuestions = JSON.parse(JSON.stringify(questionsData));
+            shuffleArray(shuffledQuestions);
+            loadExam();
+        }
+
+        // Render exam UI
+        function loadExam() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+
+            shuffledQuestions.forEach((q, index) => {
+                const displayNum = index + 1;
+                const isAnswered = userProgress[q.id] !== undefined;
+                const questionCard = document.createElement('div');
+                questionCard.id = `q-card-${q.id}`;
+                questionCard.className = "bg-white rounded-2xl border-2 border-slate-200/80 p-5 sm:p-7 md:p-8 shadow-md hover:shadow-lg transition-all duration-300 relative overflow-hidden";
+
+                let ribbonClass = "bg-slate-300 w-1.5";
+                if (isAnswered) {
+                    ribbonClass = userProgress[q.id].isCorrect ? "bg-emerald-500 w-2.5" : "bg-rose-500 w-2.5";
+                }
+
+                questionCard.innerHTML = `
+                    <!-- Ribbon Indicator -->
+                    <div class="absolute top-0 left-0 h-full ${ribbonClass}" id="ribbon-${q.id}"></div>
+                    
+                    <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4 pl-2">
+                        <div class="flex items-start gap-3 min-w-0">
+                            <!-- Strong, larger digit for sequential numbering -->
+                            <span class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center font-black text-sm sm:text-lg shrink-0 mt-0.5">
+                                ${displayNum}
+                            </span>
+                            <div class="space-y-1">
+                                <h3 class="font-extrabold text-slate-900 english-text leading-relaxed break-words text-base sm:text-lg md:text-xl">${q.question}</h3>
+                            </div>
+                        </div>
+                        
+                        <!-- Translate button -->
+                        <button onclick="toggleTranslation(${q.id})" 
+                                title="ترجمة السؤال للعربية"
+                                class="self-end sm:self-start flex items-center gap-1 px-3.5 py-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 active:bg-indigo-200 rounded-xl text-xs sm:text-sm font-black transition-all duration-200 shrink-0 shadow-sm border border-indigo-100">
+                            <i class="fa-solid fa-language text-sm sm:text-base"></i>
+                            <span class="arabic-text font-bold">ترجمة</span>
+                        </button>
+                    </div>
+
+                    <!-- Translation Box -->
+                    <div id="trans-box-${q.id}" class="hidden mt-4 p-4 bg-indigo-50/70 border-2 border-indigo-100 rounded-xl arabic-text text-indigo-950 text-sm sm:text-base md:text-lg font-bold leading-relaxed shadow-inner">
+                        <i class="fa-solid fa-circle-info text-indigo-500 ml-1.5"></i>
+                        <strong>الترجمة العربية: </strong> ${q.arabicQuestion}
+                    </div>
+
+                    <!-- Options List -->
+                    <div class="mt-5 sm:mt-7 grid grid-cols-1 md:grid-cols-2 gap-3">
+                        ${Object.entries(q.options).map(([key, text]) => {
+                            let cardStyle = "bg-slate-50/90 hover:bg-indigo-50/40 text-slate-900 border-2 border-slate-200/80 shadow-sm";
+                            let iconStyle = "border-slate-400";
+                            let iconContent = "";
+                            let pointerEvents = "";
+
+                            if (isAnswered) {
+                                pointerEvents = "style='pointer-events: none;'";
+                                const userChoice = userProgress[q.id].selected;
+                                if (key === q.correct) {
+                                    cardStyle = "bg-emerald-50 border-emerald-500 text-emerald-950 font-black shadow-inner ring-1 ring-emerald-200";
+                                    iconStyle = "bg-emerald-500 text-white border-emerald-500";
+                                    iconContent = '<i class="fa-solid fa-check"></i>';
+                                } else if (key === userChoice) {
+                                    cardStyle = "bg-rose-50 border-rose-500 text-rose-950 font-black shadow-inner ring-1 ring-rose-200";
+                                    iconStyle = "bg-rose-500 text-white border-rose-500";
+                                    iconContent = '<i class="fa-solid fa-xmark"></i>';
+                                } else {
+                                    cardStyle = "opacity-40 bg-slate-50 border-slate-200";
+                                }
+                            }
+
+                            return `
+                                <button id="opt-${q.id}-${key}" 
+                                        onclick="selectOption(${q.id}, '${key}')"
+                                        ${pointerEvents}
+                                        class="option-card flex items-center justify-between p-4 rounded-xl border-2 hover:border-indigo-500 ${cardStyle} text-left font-bold text-sm sm:text-base w-full gap-3">
+                                    <span class="english-text flex-1 break-words">${key.toUpperCase()}) ${text}</span>
+                                    <span id="icon-${q.id}-${key}" class="w-5.5 h-5.5 rounded-full border-2 flex items-center justify-center text-xs shrink-0 ${iconStyle}">${iconContent}</span>
+                                </button>
+                            `;
+                        }).join('')}
+                    </div>
+
+                    <!-- Explanation Block -->
+                    <div id="explain-box-${q.id}" class="${isAnswered ? '' : 'hidden'} mt-5 sm:mt-7 p-5 rounded-xl border-2 leading-relaxed text-sm sm:text-base ${
+                        isAnswered && userProgress[q.id].isCorrect 
+                            ? 'bg-emerald-50/70 border-emerald-200 text-emerald-950 font-medium' 
+                            : 'bg-rose-50/70 border-rose-200 text-rose-950 font-medium'
+                    }">
+                        <div class="flex items-center gap-2 mb-3 font-black text-sm sm:text-base md:text-lg ${
+                            isAnswered && userProgress[q.id].isCorrect ? 'text-emerald-800' : 'text-rose-800'
+                        }" id="explain-title-${q.id}">
+                            ${isAnswered 
+                                ? (userProgress[q.id].isCorrect 
+                                    ? '<i class="fa-solid fa-circle-check text-base sm:text-xl"></i> إجابة صحيحة وممتازة! ✨' 
+                                    : `<i class="fa-solid fa-circle-xmark text-base sm:text-xl"></i> إجابة خاطئة! الخيار الصحيح هو (${q.correct.toUpperCase()})`)
+                                : ''
+                            }
+                        </div>
+                        <p class="arabic-text leading-relaxed font-bold" id="explain-text-${q.id}">
+                            ${q.explanation}
+                        </p>
+                    </div>
+                `;
+                container.appendChild(questionCard);
+            });
+            updateStats();
+        }
+
+        // Toggle translation box visibility
+        function toggleTranslation(id) {
+            const transBox = document.getElementById(`trans-box-${id}`);
+            transBox.classList.toggle('hidden');
+        }
+
+        // Handle option selection
+        function selectOption(qId, selectedKey) {
+            if (userProgress[qId]) return;
+
+            const question = shuffledQuestions.find(q => q.id === qId);
+            const isCorrect = (selectedKey === question.correct);
+
+            userProgress[qId] = {
+                selected: selectedKey,
+                isCorrect: isCorrect
+            };
+
+            const ribbon = document.getElementById(`ribbon-${qId}`);
+            const explainBox = document.getElementById(`explain-box-${qId}`);
+            const explainTitle = document.getElementById(`explain-title-${qId}`);
+
+            Object.keys(question.options).forEach(key => {
+                const card = document.getElementById(`opt-${qId}-${key}`);
+                const icon = document.getElementById(`icon-${qId}-${key}`);
+
+                card.style.pointerEvents = 'none';
+
+                if (key === question.correct) {
+                    card.className = "option-card flex items-center justify-between p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-950 font-black text-sm sm:text-base w-full gap-3 shadow-inner ring-1 ring-emerald-200";
+                    icon.className = "w-5.5 h-5.5 rounded-full bg-emerald-500 text-white flex items-center justify-center border-2 border-emerald-500 shrink-0";
+                    icon.innerHTML = '<i class="fa-solid fa-check"></i>';
+                } else if (key === selectedKey) {
+                    card.className = "option-card flex items-center justify-between p-4 rounded-xl border-2 border-rose-500 bg-rose-50 text-rose-950 font-black text-sm sm:text-base w-full gap-3 shadow-inner ring-1 ring-rose-200";
+                    icon.className = "w-5.5 h-5.5 rounded-full bg-rose-500 text-white flex items-center justify-center border-2 border-rose-500 shrink-0";
+                    icon.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+                } else {
+                    card.classList.add('opacity-40');
+                }
+            });
+
+            explainBox.classList.remove('hidden');
+            if (isCorrect) {
+                ribbon.className = "absolute top-0 left-0 w-2.5 h-full bg-emerald-500";
+                explainBox.className = "mt-5 sm:mt-7 p-5 rounded-xl border-2 border-emerald-200 leading-relaxed text-sm sm:text-base bg-emerald-50/70 text-emerald-950";
+                explainTitle.className = "text-emerald-800 flex items-center gap-2 arabic-text font-black text-sm sm:text-base md:text-lg";
+                explainTitle.innerHTML = '<i class="fa-solid fa-circle-check text-base sm:text-xl"></i> إجابة صحيحة وممتازة! ✨';
+            } else {
+                ribbon.className = "absolute top-0 left-0 w-2.5 h-full bg-rose-500";
+                explainBox.className = "mt-5 sm:mt-7 p-5 rounded-xl border-2 border-rose-200 leading-relaxed text-sm sm:text-base bg-rose-50/70 text-rose-950";
+                explainTitle.className = "text-rose-800 flex items-center gap-2 arabic-text font-black text-sm sm:text-base md:text-lg";
+                explainTitle.innerHTML = `<i class="fa-solid fa-circle-xmark text-base sm:text-xl"></i> إجابة خاطئة! الخيار الصحيح هو (${question.correct.toUpperCase()})`;
+            }
+
+            updateStats();
+        }
+
+        // Update overall exam statistics
+        function updateStats() {
+            let correctCount = 0;
+            let answeredCount = 0;
+
+            Object.keys(userProgress).forEach(qId => {
+                answeredCount++;
+                if (userProgress[qId].isCorrect) {
+                    correctCount++;
+                }
+            });
+
+            const wrongCount = answeredCount - correctCount;
+            const scorePercentage = answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) : 0;
+
+            document.getElementById('stat-correct').innerText = correctCount;
+            document.getElementById('stat-wrong').innerText = wrongCount;
+            document.getElementById('stat-score').innerText = `${scorePercentage}%`;
+            document.getElementById('progress-text').innerText = `تم حل ${answeredCount} من 50`;
+        }
+
+        // Reset and reshuffle whole exam
+        function resetExam() {
+            resetAndShuffle();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+
+        /* ================= DHIKR SYSTEM (بابل الأذكار المبتكرة) ================= */
+        let dhikrInterval = null;
+
+        function initDhikrSystem() {
+            changeDhikrText();
+            // Trigger bubble text rotation and ensure appearance every 2 minutes (120000 ms)
+            dhikrInterval = setInterval(() => {
+                const bubble = document.getElementById('dhikr-bubble');
+                changeDhikrText();
+                bubble.style.display = 'flex';
+                bubble.style.opacity = '1';
+                bubble.style.transform = 'scale(1)';
+            }, 120000);
+        }
+
+        function changeDhikrText() {
+            const randomIndex = Math.floor(Math.random() * dhikrMessages.length);
+            document.getElementById('dhikr-text').innerText = dhikrMessages[randomIndex];
+        }
+
+        function dismissDhikr(event) {
+            event.stopPropagation();
+            const bubble = document.getElementById('dhikr-bubble');
+            bubble.style.transition = "all 0.3s ease";
+            bubble.style.opacity = '0';
+            bubble.style.transform = 'translateY(50px) scale(0.9)';
+            
+            setTimeout(() => {
+                bubble.style.display = 'none';
+            }, 300);
+        }
+
+        document.getElementById('dhikr-bubble').addEventListener('click', function(e) {
+            changeDhikrText();
+            dismissDhikr(e);
+        });
+
+    </script>
+</body>
+</html>
