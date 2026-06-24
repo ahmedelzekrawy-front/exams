@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Comprehensive IT Exam Portal (Lectures 1-5)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons for premium look -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Cairo for Arabic, Inter for English) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', 'Cairo', sans-serif;
+            background-color: #f0f4f8; /* Distinct soft cool background to make boxes pop out */
+            -webkit-tap-highlight-color: transparent;
+        }
+        .arabic-text {
+            font-family: 'Cairo', sans-serif;
+            direction: rtl;
+            text-align: right;
+        }
+        .english-text {
+            font-family: 'Inter', sans-serif;
+            direction: ltr;
+            text-align: left;
+        }
+        /* Custom smooth transition for hover effects */
+        .option-card {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        /* Style for the floating remembrance bubble */
+        #dhikr-bubble {
+            animation: bounceSlow 3.5s infinite ease-in-out;
+            z-index: 999;
+        }
+        @keyframes bounceSlow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        /* Custom scrollbar for better visual quality */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="text-slate-900 antialiased selection:bg-indigo-100 flex flex-col min-h-screen">
+
+    <!-- Top Premium Navbar (Perfectly Responsive) -->
+    <header class="sticky top-0 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm z-50">
+        <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2 sm:gap-3 overflow-hidden">
+                <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-200 shrink-0">
+                    <i class="fa-solid fa-graduation-cap text-base sm:text-xl"></i>
+                </div>
+                <div class="truncate">
+                    <h1 class="font-extrabold text-sm sm:text-lg text-slate-900 tracking-tight leading-tight truncate">IT Comprehensive Exam</h1>
+                    <span class="text-[10px] sm:text-xs text-indigo-600 font-bold uppercase tracking-wider block sm:inline">60 MCQs • First 5 Lectures</span>
+                </div>
+            </div>
+            <!-- Progress Pill -->
+            <div class="bg-indigo-50 border-2 border-indigo-100 rounded-full px-3 py-1 sm:px-4 sm:py-1.5 flex items-center gap-1.5 shrink-0">
+                <span class="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-pulse"></span>
+                <span class="text-xs sm:text-sm font-extrabold text-indigo-700 arabic-text" id="progress-text">تم حل 0 من 60</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container (Full Width on Desktop, Highly Responsive on iPhone X) -->
+    <main class="w-full max-w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 flex-1">
+        
+        <!-- Welcome banner & Quick Statistics -->
+        <div class="bg-white rounded-2xl border-2 border-indigo-100 p-5 sm:p-6 md:p-8 mb-6 shadow-md">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                <div class="space-y-3">
+                    <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight arabic-text">بوابة التدريب الشاملة الموحدة 🎯</h2>
+                    <p class="text-slate-700 text-sm sm:text-base md:text-lg leading-relaxed arabic-text">
+                        تضم هذه الصفحة <span class="font-extrabold text-indigo-600">60 سؤالاً كاملاً</span> من أول خمس محاضرات مرتبة ومحققة علمياً. اضغط على أيقونة الترجمة أمام أي سؤال لعرضه بالعربية بوضوح وحل لترى النتيجة والتفسير الفوري بالتفصيل.
+                    </p>
+                </div>
+                <!-- Stats Grid - Perfect for Mobile & Desktop -->
+                <div class="grid grid-cols-3 gap-2 sm:gap-4 w-full lg:w-auto shrink-0">
+                    <div class="bg-indigo-50/50 p-3 sm:p-4 rounded-xl border border-indigo-100 shadow-sm text-center">
+                        <span class="block text-2xl sm:text-3xl font-black text-emerald-600" id="stat-correct">0</span>
+                        <span class="text-[10px] sm:text-xs text-slate-600 font-extrabold arabic-text block mt-1">إجابة صحيحة</span>
+                    </div>
+                    <div class="bg-rose-50/50 p-3 sm:p-4 rounded-xl border border-rose-100 shadow-sm text-center">
+                        <span class="block text-xl sm:text-3xl font-black text-rose-600" id="stat-wrong">0</span>
+                        <span class="text-[10px] sm:text-xs text-slate-600 font-extrabold arabic-text block mt-1">إجابة خاطئة</span>
+                    </div>
+                    <div class="bg-slate-100 p-3 sm:p-4 rounded-xl border border-slate-200 shadow-sm text-center">
+                        <span class="block text-xl sm:text-3xl font-black text-indigo-600" id="stat-score">0%</span>
+                        <span class="text-[10px] sm:text-xs text-slate-600 font-extrabold arabic-text block mt-1">النسبة الكلية</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Action Area -->
+            <div class="mt-4 sm:mt-6 flex justify-between items-center flex-wrap gap-3 border-t border-slate-200/60 pt-4">
+                <span class="text-xs sm:text-sm font-bold text-slate-500 arabic-text" id="visible-count">60 سؤالاً جاهزاً للحل المباشر</span>
+                <button onclick="resetExam()" class="flex items-center justify-center gap-2 px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 shadow-md hover:shadow-lg">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    <span class="arabic-text">إعادة تصفير البدء والحل مجدداً</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Questions Container (Full width on large screens, mobile optimized) -->
+        <div class="space-y-6" id="questions-container">
+            <!-- Questions will be dynamically loaded here by JS -->
+        </div>
+
+    </main>
+
+    <!-- Footer space for padding bottom on mobile devices to prevent bubble overlap -->
+    <div class="h-24"></div>
+
+    <!-- Remembrance Floating Bubble (Dhikr) - Fixed layout issues on mobile (iPhone X safe) -->
+    <div id="dhikr-bubble" class="fixed bottom-4 right-4 left-4 sm:left-auto sm:right-6 flex items-center gap-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-xl shadow-xl hover:scale-[1.02] active:scale-95 transition-transform duration-200 cursor-pointer max-w-none sm:max-w-sm border border-emerald-400">
+        <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-mosque text-lg"></i>
+        </div>
+        <div class="flex-1 min-w-0">
+            <p class="text-[10px] font-bold uppercase tracking-wider text-emerald-100 arabic-text">ذكر ودعاء مستحب 🌸</p>
+            <p class="font-extrabold text-sm sm:text-base leading-snug arabic-text truncate" id="dhikr-text">اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ</p>
+        </div>
+        <button onclick="dismissDhikr(event)" class="text-emerald-100 hover:text-white bg-white/10 hover:bg-white/20 w-7 h-7 rounded-lg flex items-center justify-center transition-colors shrink-0">
+            <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+    </div>
+
+    <!-- Main JavaScript Code -->
+    <script>
+        // Array of Dhikr messages to cycle through
+        const dhikrMessages = [
+            "اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ",
+            "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ ، سُبْحَانَ اللَّهِ الْعَظِيمِ",
+            "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ الْعَلِيِّ الْعَظِيمِ",
+            "لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ",
+            "أَسْتَغْفِرُ اللَّهَ الْعَظِيمَ الَّذِي لَا إِلَٰهَ إِلَّا هُوَ وَأَتُوبُ إِلَيْهِ",
+            "الْحَمْدُ لِلَّهِ حَمْدًا كَثِيرًا طَيِّبًا مُبَارَكًا فِيهِ",
+            "يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ أَصْلِحْ لِي شَأْنِي كُلَّهُ"
+        ];
+
+        // 60 Fully Rich Questions Database with translations and detailed explanations
+        const questionsData = [
+            {
+                id: 1,
+                question: "Raw facts and figures entered into a computer are called?",
+                options: { a: "Information", b: "Data", c: "Programs", d: "Knowledge" },
+                correct: "b",
+                arabicQuestion: "الحقائق والأرقام الخام التي يتم إدخالها إلى الكمبيوتر تسمى؟",
+                explanation: "البيانات <span class='font-semibold'>Data</span> هي المدخلات الخام غير المعالجة، في حين أن المعلومات <span class='font-semibold'>Information</span> هي البيانات بعد معالجتها وتنظيمها لتصبح مفهومة ومفيدة للمستخدم."
+            },
+            {
+                id: 2,
+                question: "Processed and organized data is called?",
+                options: { a: "Storage", b: "Information", c: "Byte", d: "Protocol" },
+                correct: "b",
+                arabicQuestion: "البيانات التي تمت معالجتها وتنظيمها تسمى؟",
+                explanation: "المعلومات <span class='font-semibold'>Information</span> تنتج عن معالجة وتنظيم البيانات <span class='font-semibold'>Data</span> لتصبح ذات قيمة وفائدة للمستقبل في اتخاذ القرارات."
+            },
+            {
+                id: 3,
+                question: "Which component of IT deals with communication systems?",
+                options: { a: "Computer Technology", b: "Communication Technology", c: "Database Technology", d: "Software Engineering" },
+                correct: "b",
+                arabicQuestion: "أي من مكونات تكنولوجيا المعلومات يتعامل مع أنظمة الاتصالات؟",
+                explanation: "تكنولوجيا الاتصالات <span class='font-semibold'>Communication Technology</span> هي المكون المسؤول عن ربط الأنظمة ونقل الإشارات والبيانات عبر المسافات."
+            },
+            {
+                id: 4,
+                question: "Which characteristic means a computer can perform different tasks?",
+                options: { a: "Speed", b: "Accuracy", c: "Versatility", d: "Storage" },
+                correct: "c",
+                arabicQuestion: "أي خاصية تعني أن الكمبيوتر يمكنه أداء مهام مختلفة ومتنوعة؟",
+                explanation: "ميزة التعددية والشمولية <span class='font-semibold'>Versatility</span> تعني قدرة جهاز الكمبيوتر على القيام بمهام ووظائف متنوعة ومختلفة تماماً بناءً على البرامج والتعليمات المعطاة له."
+            },
+            {
+                id: 5,
+                question: "Which device is used to permanently retain large amounts of data?",
+                options: { a: "CPU", b: "RAM", c: "Disk Drive", d: "Monitor" },
+                correct: "c",
+                arabicQuestion: "أي جهاز يتم استخدامه للاحتفاظ بكميات كبيرة من البيانات بشكل دائم؟",
+                explanation: "محرك الأقراص <span class='font-semibold'>Disk Drive</span> هو وحدة تخزين ثانوية غير متطايرة <span class='font-semibold'>Non-volatile</span> تحتفظ بالبيانات بشكل دائم، على عكس الذاكرة العشوائية <span class='font-semibold'>RAM</span> التي تفقد محتواها بمجرد انقطاع الكهرباء."
+            },
+            {
+                id: 6,
+                question: "The heart of the computer is the:",
+                options: { a: "Memory", b: "CPU", c: "Mouse", d: "Printer" },
+                correct: "b",
+                arabicQuestion: "قلب الكمبيوتر النابض هو:",
+                explanation: "وحدة المعالجة المركزية <span class='font-semibold'>CPU</span> تُعرف بـ 'قلب' أو 'عقل' الكمبيوتر لأنها المسؤولة عن معالجة البيانات وتنفيذ التعليمات البرمجية."
+            },
+            {
+                id: 7,
+                question: "1 KB equals:",
+                options: { a: "1000 Bytes", b: "1024 Bytes", c: "1024 KB", d: "1024 MB" },
+                correct: "b",
+                arabicQuestion: "الكيلوبايت الواحد (1 KB) يساوي:",
+                explanation: "في الأنظمة الرقمية والأنظمة الثنائية، الكيلوبايت الواحد <span class='font-semibold'>1 KB</span> يعادل بالضبط $2^{10}$ أي <span class='font-semibold'>1024 Bytes</span>."
+            },
+            {
+                id: 8,
+                question: "The smallest unit of data is:",
+                options: { a: "Byte", b: "KB", c: "Bit", d: "Character" },
+                correct: "c",
+                arabicQuestion: "أصغر وحدة لقياس وتخزين البيانات هي:",
+                explanation: "البت <span class='font-semibold'>Bit</span> (إما 0 أو 1) هو أصغر وحدة لقياس وتخزين البيانات في الكمبيوتر، بينما يتكون البايت <span class='font-semibold'>Byte</span> من 8 بتات."
+            },
+            {
+                id: 9,
+                question: "A network of networks is called:",
+                options: { a: "LAN", b: "WAN", c: "Internet", d: "Intranet" },
+                correct: "c",
+                arabicQuestion: "شبكة الشبكات الضخمة تسمى:",
+                explanation: "شبكة الإنترنت <span class='font-semibold'>Internet</span> هي الشبكة العالمية الناتجة عن ربط آلاف شبكات الحاسوب المحلية والواسعة حول العالم ببعضها البعض."
+            },
+            {
+                id: 10,
+                question: "A chunk of data transmitted across a network is called:",
+                options: { a: "Frame", b: "Packet", c: "Segment", d: "Cell" },
+                correct: "b",
+                arabicQuestion: "تسمى القطعة أو الجزء من البيانات المرسلة عبر الشبكة بـ:",
+                explanation: "الحزمة <span class='font-semibold'>Packet</span> هي وحدة البيانات الأساسية التي يتم تقسيم المعلومات إليها لإرسالها وتوجيهها عبر شبكات تبديل الحزم مثل الإنترنت."
+            },
+            {
+                id: 11,
+                question: "Which protocol is used for reliable data transmission?",
+                options: { a: "IP", b: "HTTP", c: "TCP", d: "WiFi" },
+                correct: "c",
+                arabicQuestion: "أي بروتوكول يتم استخدامه لنقل البيانات بشكل موثوق (Reliable)؟",
+                explanation: "بروتوكول التحكم في النقل <span class='font-semibold'>TCP (Transmission Control Protocol)</span> يوفر نقل بيانات موثوق عبر إنشاء اتصال والتأكد من وصول الحزم وخلوها من الأخطاء."
+            },
+            {
+                id: 12,
+                question: "Which topology uses one backbone cable?",
+                options: { a: "Ring", b: "Mesh", c: "Bus", d: "Star" },
+                correct: "c",
+                arabicQuestion: "أي طوبولوجيا شبكات تستخدم كابلاً رئيسياً واحداً متصلاً بجميع الأجهزة؟",
+                explanation: "طوبولوجيا الحافلة <span class='font-semibold'>Bus Topology</span> تعتمد على كابل محوري رئيسي واحد مشترك <span class='font-semibold'>Backbone Cable</span> تتصل به كافة الأجهزة عبر تفرعات."
+            },
+            {
+                id: 13,
+                question: "Which topology suffers if one link fails?",
+                options: { a: "Mesh", b: "Ring", c: "Tree", d: "Star" },
+                correct: "b",
+                arabicQuestion: "أي طوبولوجيا تعاني من تعطل الشبكة بالكامل إذا انقطع رابط واحد أو تعطل جهاز واحد؟",
+                explanation: "في طوبولوجيا الحلقة <span class='font-semibold'>Ring Topology</span>، تنتقل البيانات في اتجاه دائري عبر كل جهاز، مما يعني أن تعطل أي جهاز أو كابل يؤدي لقطع الحلقة بأكملها وتعطل الاتصال."
+            },
+            {
+                id: 14,
+                question: "Which topology has a central hub or switch?",
+                options: { a: "Bus", b: "Ring", c: "Star", d: "Mesh" },
+                correct: "c",
+                arabicQuestion: "أي طوبولوجيا تحتوي على موزع أو مبدل مركزي ترتبط به كافة الأجهزة؟",
+                explanation: "طوبولوجيا النجمة <span class='font-semibold'>Star Topology</span> تربط جميع الأجهزة بشكل منفصل ومباشر بجهاز مركزي مثل الـ <span class='font-semibold'>Hub</span> أو الـ <span class='font-semibold'>Switch</span> لتنظيم حركة المرور."
+            },
+            {
+                id: 15,
+                question: "Which topology offers the highest redundancy?",
+                options: { a: "Bus", b: "Ring", c: "Mesh", d: "Star" },
+                correct: "c",
+                arabicQuestion: "أي طوبولوجيا تقدم أعلى مستوى من الوفرة والمسارات البديلة (Redundancy)؟",
+                explanation: "طوبولوجيا الشبكة الكاملة <span class='font-semibold'>Mesh Topology</span> توفر اتصالات متعددة ومباشرة بين كافة الأجهزة، مما يمنحها موثوقية عالية للغاية <span class='font-semibold'>High Redundancy</span>."
+            },
+            {
+                id: 16,
+                question: "Ethernet is most popular in:",
+                options: { a: "WAN", b: "LAN", c: "MAN", d: "PAN" },
+                correct: "b",
+                arabicQuestion: "تقنية الإيثرنت (Ethernet) السلكية هي الأكثر شيوعاً واستخداماً في:",
+                explanation: "تقنية <span class='font-semibold'>Ethernet</span> هي المعيار السلكي الأكثر استخداماً لإنشاء وتوصيل الأجهزة بالشبكات المحلية <span class='font-semibold'>LAN (Local Area Network)</span>."
+            },
+            {
+                id: 17,
+                question: "How many layers are in the OSI model?",
+                options: { a: "4", b: "5", c: "7", d: "8" },
+                correct: "c",
+                arabicQuestion: "كم عدد الطبقات في نموذج OSI المعياري للاتصالات؟",
+                explanation: "يحتوي نموذج الاتصال المتبادل للأنظمة المفتوحة <span class='font-semibold'>OSI Model</span> على <span class='font-semibold'>7</span> طبقات معيارية تبدأ بالفيزيائية وتنتهي بطبقة التطبيقات."
+            },
+            {
+                id: 18,
+                question: "Which layer transmits raw bits?",
+                options: { a: "Network", b: "Data Link", c: "Physical", d: "Transport" },
+                correct: "c",
+                arabicQuestion: "أي طبقة في نموذج OSI تقوم بنقل البتات الخام (Raw Bits)؟",
+                explanation: "الطبقة الفيزيائية <span class='font-semibold'>Physical Layer</span> هي الطبقة الأولى المسؤولة عن إرسال واستقبال تدفقات البتات الخام عبر الأوساط الفيزيائية والأسلاك."
+            },
+            {
+                id: 19,
+                question: "Which layer performs framing?",
+                options: { a: "Transport", b: "Data Link", c: "Network", d: "Session" },
+                correct: "b",
+                arabicQuestion: "أي طبقة تقوم بعملية تغليف البتات وتأطيرها (Framing)؟",
+                explanation: "طبقة ربط البيانات <span class='font-semibold'>Data Link Layer</span> تجمع البتات القادمة من الطبقة الفيزيائية وتحولها إلى كتل بيانات منظمة تسمى الإطارات <span class='font-semibold'>Frames</span>."
+            },
+            {
+                id: 20,
+                question: "Which layer performs routing?",
+                options: { a: "Session", b: "Transport", c: "Network", d: "Physical" },
+                correct: "c",
+                arabicQuestion: "أي طبقة في نموذج OSI تقوم بعملية توجيه حزم البيانات (Routing)؟",
+                explanation: "طبقة الشبكة <span class='font-semibold'>Network Layer</span> هي المسؤولة عن تحديد المسار الأمثل وتوجيه الحزم <span class='font-semibold'>Packets</span> عبر الشبكات باستخدام عناوين الـ IP."
+            },
+            {
+                id: 21,
+                question: "Which layer establishes and terminates sessions?",
+                options: { a: "Presentation", b: "Application", c: "Session", d: "Network" },
+                correct: "c",
+                arabicQuestion: "أي طبقة تقوم بإنشاء الجلسات وإدارتها وإنهائها بين التطبيقات؟",
+                explanation: "طبقة الجلسة <span class='font-semibold'>Session Layer</span> هي المسؤولة عن فتح، إدارة، ومزامنة، وإغلاق قنوات الحوار والاتصال بين الأجهزة المضيفة."
+            },
+            {
+                id: 22,
+                question: "Which layer handles encryption and compression?",
+                options: { a: "Transport", b: "Presentation", c: "Session", d: "Data Link" },
+                correct: "b",
+                arabicQuestion: "أي طبقة تتعامل مع تشفير وفك التشفير وضغط البيانات (Encryption & Compression)؟",
+                explanation: "طبقة التقديم <span class='font-semibold'>Presentation Layer</span> تضمن فهم البيانات المتبادلة وتتعامل مع التنسيق، التشفير <span class='font-semibold'>Encryption</span>، والضغط <span class='font-semibold'>Compression</span>."
+            },
+            {
+                id: 23,
+                question: "An embedded system is designed to perform:",
+                options: { a: "General tasks", b: "Dedicated functions", c: "Internet browsing", d: "Multitasking only" },
+                correct: "b",
+                arabicQuestion: "تم تصميم النظام المدمج (Embedded System) للقيام بـ:",
+                explanation: "الأنظمة المدمجة <span class='font-semibold'>Embedded Systems</span> تُصمم خصيصاً لأداء وظائف ومهام محددة ومخصصة <span class='font-semibold'>Dedicated functions</span> بكفاءة عالية، بخلاف أنظمة الكمبيوتر العامة."
+            },
+            {
+                id: 24,
+                question: "RTOS stands for:",
+                options: { a: "Real-Time Operating System", b: "Remote Technology Operating System", c: "Real Task Operating System", d: "Runtime OS" },
+                correct: "a",
+                arabicQuestion: "ماذا يعني الاختصار الشهير RTOS؟",
+                explanation: "يرمز الاختصار <span class='font-semibold'>RTOS</span> إلى نظام التشغيل الفوري أو ذي الوقت الحقيقي <span class='font-semibold'>Real-Time Operating System</span>، وهو نظام يضمن الاستجابة للأحداث والمهام في أوقات دقيقة وصارمة للغاية."
+            },
+            {
+                id: 25,
+                question: "A microcontroller contains processor, memory and:",
+                options: { a: "Database", b: "I/O interfaces", c: "Monitor", d: "Printer" },
+                correct: "b",
+                arabicQuestion: "يحتوي المتحكم الدقيق (Microcontroller) على معالج، وذاكرة، بالإضافة إلى:",
+                explanation: "المتحكم الدقيق <span class='font-semibold'>Microcontroller</span> عبارة عن كمبيوتر كامل على شريحة واحدة يحتوي على معالج، وذاكرة، وواجهات إدخال وإخراج <span class='font-semibold'>I/O interfaces</span> للتحكم بالأجهزة الخارجية."
+            },
+            {
+                id: 26,
+                question: "A sensor converts physical quantities into:",
+                options: { a: "Images", b: "Electrical signals", c: "Programs", d: "Packets" },
+                correct: "b",
+                arabicQuestion: "يقوم الحساس (Sensor) بتحويل الكميات الفيزيائية المختلفة إلى:",
+                explanation: "الحساس <span class='font-semibold'>Sensor</span> يقوم باستشعار التغيرات الفيزيائية في البيئة المحيطة (مثل الحرارة أو الضوء) وتحويلها إلى إشارات كهربائية <span class='font-semibold'>Electrical signals</span>."
+            },
+            {
+                id: 27,
+                question: "ADC converts:",
+                options: { a: "Digital to Analog", b: "Analog to Digital", c: "Bits to Bytes", d: "Signals to Packets" },
+                correct: "b",
+                arabicQuestion: "يقوم محول الـ ADC بتحويل:",
+                explanation: "يرمز <span class='font-semibold'>ADC</span> إلى <span class='font-semibold'>Analog to Digital Converter</span>، وهو المسؤول عن تحويل الإشارات التماثلية المستمرة من البيئة إلى قيم رقمية منفصلة."
+            },
+            {
+                id: 28,
+                question: "ALU executes:",
+                options: { a: "Routing algorithms", b: "Arithmetic and logical instructions", c: "Network protocols", d: "Interrupts" },
+                correct: "b",
+                arabicQuestion: "تقوم وحدة الحساب والمنطق (ALU) داخل المعالج بتنفيذ:",
+                explanation: "وحدة الحساب والمنطق <span class='font-semibold'>Arithmetic and Logic Unit (ALU)</span> هي جزء أساسي داخل المعالج يقوم بإجراء كافة العمليات الحسابية والمنطقية والتعليمات الرياضية."
+            },
+            {
+                id: 29,
+                question: "The most commonly used language in embedded systems is:",
+                options: { a: "Java", b: "Python", c: "C", d: "PHP" },
+                correct: "c",
+                arabicQuestion: "اللغة البرمجية الأكثر شيوعاً واستخداماً في برمجيات الأنظمة المدمجة هي:",
+                explanation: "لغة البرمجة <span class='font-semibold'>C</span> هي اللغة القياسية والأكثر شيوعاً في كتابة برمجيات الأنظمة المدمجة نظراً لقربها من مستوى العتاد والتحكم الفائق بالذاكرة."
+            },
+            {
+                id: 30,
+                question: "A hard real-time system:",
+                options: { a: "May miss deadlines", b: "Cannot miss any deadline", c: "Uses no processor", d: "Needs no RTOS" },
+                correct: "b",
+                arabicQuestion: "نظام الوقت الحقيقي الصارم (Hard Real-Time System):",
+                explanation: "في أنظمة <span class='font-semibold'>Hard Real-Time Systems</span>، يُعد الالتزام بالوقت الحاسم والنهائي <span class='font-semibold'>Deadline</span> أمراً صارماً وحيوياً جداً؛ حيث يؤدي تفويت موعد استجابة واحد إلى فشل ذريع للنظام بالكامل."
+            },
+            {
+                id: 31,
+                question: "The smallest element of a digital image is:",
+                options: { a: "Frame", b: "Pixel", c: "Object", d: "Segment" },
+                correct: "b",
+                arabicQuestion: "أصغر عنصر أو خلية مكونة للصورة الرقمية هو:",
+                explanation: "البكسل <span class='font-semibold'>Pixel</span> هو أصغر عنصر هيكلي قابل للتمثيل والتحكم داخل الصورة الرقمية ويحمل قيمة لونه أو إضاءته."
+            },
+            {
+                id: 32,
+                question: "A binary image contains:",
+                options: { a: "256 gray levels", b: "RGB colors", c: "Only black and white", d: "24-bit colors" },
+                correct: "c",
+                arabicQuestion: "تحتوي الصورة الثنائية (Binary Image) على:",
+                explanation: "تتكون الصورة الثنائية <span class='font-semibold'>Binary Image</span> من قيمتين فقط لكل بكسل (إما 0 أو 1)، مما يعني أنها تمثل اللونين الأسود والأبيض فقط <span class='font-semibold'>Only black and white</span>."
+            },
+            {
+                id: 33,
+                question: "A grayscale image typically ranges from:",
+                options: { a: "0 to 1", b: "0 to 255", c: "1 to 1024", d: "0 to 1024" },
+                correct: "b",
+                arabicQuestion: "يتراوح نطاق قيم مستويات الرمادي في الصور (Grayscale) عادة من:",
+                explanation: "تُخزن مستويات التدرج الرمادي الشائعة في 8 بتات للبكسل الواحد، مما يعطي نطاقاً من $2^8 = 256$ قيمة مختلفة، تبدأ من <span class='font-semibold'>0</span> (الأسود التام) إلى <span class='font-semibold'>255</span> (الأبيض التام)."
+            },
+            {
+                id: 34,
+                question: "A 24-bit RGB image can represent:",
+                options: { a: "256 colors", b: "65,536 colors", c: "16,777,216 colors", d: "1024 colors" },
+                correct: "c",
+                arabicQuestion: "يمكن لصورة RGB بعمق لون 24 بت تمثيل:",
+                explanation: "يمثل كل لون أساسي (الأحمر، الأخضر، الأزرق) بـ 8 بتات ($2^8 = 256$ مستوى). عدد الألوان الإجمالي هو $256 \times 256 \times 256 = 2^{24} =$ <span class='font-semibold'>16,777,216</span> لوناً مختلفاً."
+            },
+            {
+                id: 35,
+                question: "Low-level processing produces:",
+                options: { a: "Attributes", b: "Understanding", c: "Another image", d: "Classes" },
+                correct: "c",
+                arabicQuestion: "عمليات المعالجة منخفضة المستوى (Low-level processing) تنتج:",
+                explanation: "تتميز معالجة الصور منخفضة المستوى بأن كلاً من المدخلات والمخرجات عبارة عن صور رقمية <span class='font-semibold'>Another image</span> (مثل عمليات تقليل الضوضاء أو تحسين التباين)."
+            },
+            {
+                id: 36,
+                question: "Segmentation belongs to:",
+                options: { a: "Low-level processing", b: "Mid-level processing", c: "High-level processing", d: "Computer graphics" },
+                correct: "b",
+                arabicQuestion: "تنتمي عملية تقسيم وتجزئة الصورة (Segmentation) إلى:",
+                explanation: "المعالجة متوسطة المستوى <span class='font-semibold'>Mid-level processing</span> تأخذ صورة كمدخلات ولكن مخرجاتها تكون صفات ومعالم مستخرجة مثل الأقسام المفصلة <span class='font-semibold'>Segmentation</span> والحدود المحددة."
+            },
+            {
+                id: 37,
+                question: "Scene understanding belongs to:",
+                options: { a: "Mid-level", b: "Low-level", c: "High-level", d: "Sampling" },
+                correct: "c",
+                arabicQuestion: "عملية فهم المشهد بصرياً وتحليله (Scene understanding) تنتمي إلى:",
+                explanation: "المعالجة عالية المستوى <span class='font-semibold'>High-level processing</span> تهدف إلى تفسير وفهم معنى الصورة والمشاهد بصرياً وربطها بالمعرفة العامة ومحاكاة الرؤية البشرية."
+            },
+            {
+                id: 38,
+                question: "Noise in an image means:",
+                options: { a: "Useful information", b: "Random unwanted information", c: "Image boundary", d: "Compression" },
+                correct: "b",
+                arabicQuestion: "تعني الضوضاء (Noise) في الصورة:",
+                explanation: "الضوضاء <span class='font-semibold'>Noise</span> هي بيانات وتغيرات عشوائية غير مرغوبة فيها تشوش على تفاصيل الصورة وجودتها الأصلية وتنتج عن مشاكل الاستشعار أو الإرسال."
+            },
+            {
+                id: 39,
+                question: "Edge detection is used to obtain:",
+                options: { a: "Noise", b: "Image storage", c: "Object boundaries", d: "Intensity levels" },
+                correct: "c",
+                arabicQuestion: "يُاستخدم كشف الحواف (Edge detection) للحصول على:",
+                explanation: "يهدف كشف الحواف إلى تحديد وتخطيط الحدود الخارجية والداخلية للأجسام <span class='font-semibold'>Object boundaries</span> الموجودة داخل الصورة من خلال كشف التغيرات الفجائية في شدة السطوع."
+            },
+            {
+                id: 40,
+                question: "Computer vision output is intended mainly for:",
+                options: { a: "Human users", b: "Computers", c: "Printers", d: "Scanners" },
+                correct: "b",
+                arabicQuestion: "مُخرجات الرؤية الحاسوبية (Computer Vision) موجهة بشكل أساسي لـ:",
+                explanation: "تهدف الرؤية الحاسوبية إلى جعل الآلات والكمبيوترات <span class='font-semibold'>Computers</span> قادرة على فهم وتحليل الصور الرقمية واتخاذ قرارات ذكية تلقائية بناءً عليها."
+            },
+            {
+                id: 41,
+                question: "A communication link transfers:",
+                options: { a: "Only voice", b: "Only text", c: "Data between devices", d: "Programs" },
+                correct: "c",
+                arabicQuestion: "يقوم رابط الاتصال (Communication link) بنقل:",
+                explanation: "رابط الاتصال هو الوسط الفيزيائي أو اللاسلكي الذي يربط بين جهازين أو أكثر لنقل وتبادل البيانات الرقمية <span class='font-semibold'>Data between devices</span> بجميع أنواعها."
+            },
+            {
+                id: 42,
+                question: "Bandwidth means:",
+                options: { a: "Storage size", b: "Transmission rate", c: "Image quality", d: "CPU speed" },
+                correct: "b",
+                arabicQuestion: "يعبر مصطلح عرض النطاق الترددي (Bandwidth) في الشبكات عن:",
+                explanation: "يعبر الـ <span class='font-semibold'>Bandwidth</span> عن معدل وسرعة نقل البيانات الأقصى <span class='font-semibold'>Transmission rate</span> المتاح عبر رابط شبكة معين في وحدة زمنية محددة."
+            },
+            {
+                id: 43,
+                question: "HTTP is mainly used for:",
+                options: { a: "Web communication", b: "Routing", c: "Email security", d: "Encryption" },
+                correct: "a",
+                arabicQuestion: "يُستخدم بروتوكول HTTP بشكل أساسي لـ:",
+                explanation: "بروتوكول نقل النص الفائق <span class='font-semibold'>HTTP (Hypertext Transfer Protocol)</span> هو بروتوكول طبقة التطبيقات الأساسي المستخدم لعرض وتصفح صفحات وتطبيقات الويب <span class='font-semibold'>Web communication</span>."
+            },
+            {
+                id: 44,
+                question: "Tree topology is also called:",
+                options: { a: "Token Ring", b: "Star-Bus topology", c: "Dual Ring", d: "Full Mesh" },
+                correct: "b",
+                arabicQuestion: "تُعرف طوبولوجيا الشجرة (Tree topology) أيضاً بـ:",
+                explanation: "طوبولوجيا الشجرة هي دمج لطوبولوجيا النجمة وطوبولوجيا الحافلة، ولذلك يُطلق عليها توبولوجيا النجمة والحافلة الهجينة <span class='font-semibold'>Star-Bus topology</span>."
+            },
+            {
+                id: 45,
+                question: "Data Link layer uses:",
+                options: { a: "Frames", b: "Packets", c: "Segments", d: "Bits" },
+                correct: "a",
+                arabicQuestion: "وحدة البيانات المستخدمة في طبقة ربط البيانات (Data Link Layer) هي:",
+                explanation: "في طبقة ربط البيانات، يتم تغليف البيانات المستلمة وتنظيمها في وحدات بنائية معيارية تسمى الإطارات <span class='font-semibold'>Frames</span>."
+            },
+            {
+                id: 46,
+                question: "Physical layer uses:",
+                options: { a: "Frames", b: "Packets", c: "Bits", d: "Segments" },
+                correct: "c",
+                arabicQuestion: "وحدة البيانات المستخدمة في الطبقة الفيزيائية (Physical Layer) هي:",
+                explanation: "تقوم الطبقة الفيزيائية بتحويل ونقل البيانات على هيئة بتات خام فردية <span class='font-semibold'>Bits</span> (نبضات كهربائية، ضوئية، أو إشارات لاسلكية)."
+            },
+            {
+                id: 47,
+                question: "A timer in an embedded system is used to:",
+                options: { a: "Store programs", b: "Measure execution time", c: "Display output", d: "Transmit packets" },
+                correct: "b",
+                arabicQuestion: "يُاستخدم المؤقت (Timer) في النظام المدمج لـ:",
+                explanation: "المؤقتات <span class='font-semibold'>Timers</span> هي دوائر عتادية مخصصة لقياس الفترات الزمنية بدقة وتوليد فترات تأخير معروفة وقياس وقت تنفيذ البرامج والمهام <span class='font-semibold'>Measure execution time</span>."
+            },
+            {
+                id: 48,
+                question: "Latency is:",
+                options: { a: "Power consumption", b: "Delay before execution", c: "Transmission speed", d: "Storage capacity" },
+                correct: "b",
+                arabicQuestion: "يعبر زمن الاستجابة أو التأخير (Latency) عن:",
+                explanation: "مصطلح الـ <span class='font-semibold'>Latency</span> يشير إلى مقدار الوقت المستغرق أو التأخير الفاصل <span class='font-semibold'>Delay before execution</span> بين طلب إجراء معين وبدء تنفيذه أو ظهور نتيجته فعلياً."
+            },
+            {
+                id: 49,
+                question: "Digitization converts a real scene into:",
+                options: { a: "Protocol", b: "Digital image", c: "Database", d: "Packet" },
+                correct: "b",
+                arabicQuestion: "عملية الرقمنة (Digitization) تحول المشهد الواقعي الفيزيائي إلى:",
+                explanation: "تهدف الرقمنة إلى التقاط وتخزين المشاهد والبيانات الفيزيائية المستمرة من العالم الحقيقي وتحويلها إلى شكل رقمي يُمثل كصورة رقمية <span class='font-semibold'>Digital image</span>."
+            },
+            {
+                id: 50,
+                question: "Sampling digitizes:",
+                options: { a: "Intensity values", b: "Spatial coordinates", c: "Colors only", d: "Objects" },
+                correct: "b",
+                arabicQuestion: "تقوم عملية أخذ العينات (Sampling) برقمنة:",
+                explanation: "تقوم عملية الـ <span class='font-semibold'>Sampling</span> بتقسيم ورقمنة الإحداثيات المكانية <span class='font-semibold'>Spatial coordinates</span> للصورة (الأبعاد والأماكن x و y)، بينما تقوم الـ Quantization برقمنة قيم الشدة والسطوع."
+            },
+            {
+                id: 51,
+                question: "Quantization digitizes:",
+                options: { a: "Coordinates", b: "Amplitude values", c: "Protocols", d: "Frames" },
+                correct: "b",
+                arabicQuestion: "تقوم عملية التكميم (Quantization) برقمنة:",
+                explanation: "تقوم عملية الـ <span class='font-semibold'>Quantization</span> بتحويل ورقمنة القيم السعوية ومستويات السطوع والشدة الضوئية <span class='font-semibold'>Amplitude values</span> المتصلة إلى قيم رقمية منفصلة."
+            },
+            {
+                id: 52,
+                question: "N8 neighbors consist of:",
+                options: { a: "N4 only", b: "ND only", c: "N4 and ND", d: "Horizontal neighbors" },
+                correct: "c",
+                arabicQuestion: "يتكون الجيران الثمانية (N8 neighbors) للبكسل من جيران:",
+                explanation: "الجيران الثمانية للبكسل p يتكونون من جيرانه الأربعة المباشرين <span class='font-semibold'>N4</span> (أفقياً ورأسياً) مضافاً إليهم جيرانه الأربعة القطريين <span class='font-semibold'>ND</span>."
+            },
+            {
+                id: 53,
+                question: "GIGO means:",
+                options: { a: "Good Input Good Output", b: "Garbage In Garbage Out", c: "Graphical Interface Output", d: "General Information Operation" },
+                correct: "b",
+                arabicQuestion: "ماذا يعني الاختصار الشهير GIGO في علوم الحاسوب والبيانات؟",
+                explanation: "يعبر اختصار <span class='font-semibold'>GIGO (Garbage In, Garbage Out)</span> عن مبدأ منطقي هام؛ وهو أنه إذا تم إدخال بيانات خاطئة أو غير صالحة للنظام، فإن النتائج والمخرجات ستكون خاطئة وغير صالحة كذلك تلقائياً."
+            },
+            {
+                id: 54,
+                question: "A monitor is an:",
+                options: { a: "Input device", b: "Output device", c: "Storage device", d: "Network device" },
+                correct: "b",
+                arabicQuestion: "تُعد شاشة العرض (Monitor) جهازاً من أجهزة:",
+                explanation: "الشاشة <span class='font-semibold'>Monitor</span> هي جهاز إخراج رئيسي <span class='font-semibold'>Output device</span> لعرض النصوص والصور والواجهات المرئية للمستخدم."
+            },
+            {
+                id: 55,
+                question: "A switch connects devices:",
+                options: { a: "Between different networks", b: "Within the same network", c: "To satellites", d: "To operating systems" },
+                correct: "b",
+                arabicQuestion: "يقوم المبدل (Switch) بربط وتوصيل الأجهزة ببعضها البعض:",
+                explanation: "المبدل <span class='font-semibold'>Switch</span> يربط الأجهزة ببعضها البعض داخل نفس الشبكة المحلية <span class='font-semibold'>Within the same network</span>، بينما يوجه الموجه <span class='font-semibold'>Router</span> البيانات بين الشبكات المختلفة."
+            },
+            {
+                id: 56,
+                question: "Which topology is expensive and difficult to maintain?",
+                options: { a: "Bus", b: "Mesh", c: "Star", d: "Tree" },
+                correct: "b",
+                arabicQuestion: "أي طوبولوجيا شبكات تعتبر مكلفة جداً وصعبة الصيانة والتركيب؟",
+                explanation: "طوبولوجيا الشبكة الكاملة <span class='font-semibold'>Mesh Topology</span> تتطلب كابلات ومنافذ هائلة لتوصيل كل جهاز بكافة الأجهزة الأخرى مباشرة، مما يجعلها مكلفة جداً وصعبة التركيب والصيانة."
+            },
+            {
+                id: 57,
+                question: "Transport layer data unit is called:",
+                options: { a: "Packet", b: "Frame", c: "Segment", d: "Bit" },
+                correct: "c",
+                arabicQuestion: "تسمى وحدة البيانات في طبقة النقل (Transport Layer) بـ:",
+                explanation: "يتم تجزئة وتغليف البيانات في طبقة النقل <span class='font-semibold'>Transport Layer</span> في وحدات تسمى المقاطع <span class='font-semibold'>Segments</span>."
+            },
+            {
+                id: 58,
+                question: "A stand-alone embedded system:",
+                options: { a: "Needs a network", b: "Operates independently", c: "Uses no processor", d: "Uses no memory" },
+                correct: "b",
+                arabicQuestion: "يعمل النظام المدمج المستقل (Stand-alone embedded system):",
+                explanation: "الأنظمة المدمجة المستقلة <span class='font-semibold'>Stand-alone</span> تعمل بشكل مستقل بذاتها <span class='font-semibold'>Operates independently</span> دون الحاجة للاتصال بشبكة خارجية (مثل الميكروويف أو الآلة الحاسبة)."
+            },
+            {
+                id: 59,
+                question: "Image enhancement aims to:",
+                options: { a: "Reduce storage only", b: "Improve image quality", c: "Destroy image details", d: "Increase noise" },
+                correct: "b",
+                arabicQuestion: "تهدف عملية تحسين الصور (Image enhancement) إلى:",
+                explanation: "تهدف عملية تحسين الصور بشكل أساسي إلى إبراز التفاصيل المستهدفة وتحسين جودة الصورة بصرياً <span class='font-semibold'>Improve image quality</span> لتكون أكثر وضوحاً للعين البشرية أو الحاسوب."
+            },
+            {
+                id: 60,
+                question: "Image analysis produces:",
+                options: { a: "Image output", b: "Measurements output", c: "Programs", d: "Packets" },
+                correct: "b",
+                arabicQuestion: "ينتج عن عملية تحليل وتفسير الصور (Image analysis):",
+                explanation: "على خلاف عمليات التحسين التي تنتج صوراً، تهدف عملية تحليل الصور إلى استخراج معلومات، قيم رقمية، إحصائيات، أو قياسات محددة <span class='font-semibold'>Measurements output</span> من المحتوى المرئي."
+            }
+        ];
+
+        // Track user performance state
+        let userProgress = {};
+
+        // On document load
+        window.onload = function() {
+            loadExam();
+            initDhikrSystem();
+        }
+
+        // Render exam UI (Loaded directly sequentially)
+        function loadExam() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+
+            questionsData.forEach((q) => {
+                const isAnswered = userProgress[q.id] !== undefined;
+                const questionCard = document.createElement('div');
+                questionCard.id = `q-card-${q.id}`;
+                // Explicitly styled with rounded corners, border, white background contrasting cool gray background
+                questionCard.className = "bg-white rounded-2xl border-2 border-slate-200/80 p-5 sm:p-7 md:p-8 shadow-md hover:shadow-lg transition-all duration-300 relative overflow-hidden";
+
+                let ribbonClass = "bg-slate-300 w-1.5";
+                if (isAnswered) {
+                    ribbonClass = userProgress[q.id].isCorrect ? "bg-emerald-500 w-2.5" : "bg-rose-500 w-2.5";
+                }
+
+                questionCard.innerHTML = `
+                    <!-- Ribbon Indicator -->
+                    <div class="absolute top-0 left-0 h-full ${ribbonClass}" id="ribbon-${q.id}"></div>
+                    
+                    <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4 pl-2">
+                        <div class="flex items-start gap-3 min-w-0">
+                            <!-- Strong, larger digit for question numbering -->
+                            <span class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center font-black text-sm sm:text-lg shrink-0 mt-0.5">
+                                ${q.id}
+                            </span>
+                            <div class="space-y-1">
+                                <!-- Larger, bolder font sizes as requested -->
+                                <h3 class="font-extrabold text-slate-900 english-text leading-relaxed break-words text-base sm:text-lg md:text-xl">${q.question}</h3>
+                            </div>
+                        </div>
+                        
+                        <!-- Translate button -->
+                        <button onclick="toggleTranslation(${q.id})" 
+                                title="ترجمة السؤال للعربية"
+                                class="self-end sm:self-start flex items-center gap-1 px-3.5 py-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 active:bg-indigo-200 rounded-xl text-xs sm:text-sm font-black transition-all duration-200 shrink-0 shadow-sm border border-indigo-100">
+                            <i class="fa-solid fa-language text-sm sm:text-base"></i>
+                            <span class="arabic-text font-bold">ترجمة</span>
+                        </button>
+                    </div>
+
+                    <!-- Translation Box (hidden initially) -->
+                    <!-- Large clear font for Arabic translation -->
+                    <div id="trans-box-${q.id}" class="hidden mt-4 p-4 bg-indigo-50/70 border-2 border-indigo-100 rounded-xl arabic-text text-indigo-950 text-sm sm:text-base md:text-lg font-bold leading-relaxed shadow-inner">
+                        <i class="fa-solid fa-circle-info text-indigo-500 ml-1.5"></i>
+                        <strong>الترجمة العربية: </strong> ${q.arabicQuestion}
+                    </div>
+
+                    <!-- Options List (Optimized vertical stacking for mobile & grid on laptop) -->
+                    <!-- Bolder and larger fonts on options cards -->
+                    <div class="mt-5 sm:mt-7 grid grid-cols-1 md:grid-cols-2 gap-3">
+                        ${Object.entries(q.options).map(([key, text]) => {
+                            let cardStyle = "bg-slate-50/90 hover:bg-indigo-50/40 text-slate-900 border-2 border-slate-200/80 shadow-sm";
+                            let iconStyle = "border-slate-400";
+                            let iconContent = "";
+                            let pointerEvents = "";
+
+                            if (isAnswered) {
+                                pointerEvents = "style='pointer-events: none;'";
+                                const userChoice = userProgress[q.id].selected;
+                                if (key === q.correct) {
+                                    cardStyle = "bg-emerald-50 border-emerald-500 text-emerald-950 font-black shadow-inner ring-1 ring-emerald-200";
+                                    iconStyle = "bg-emerald-500 text-white border-emerald-500";
+                                    iconContent = '<i class="fa-solid fa-check"></i>';
+                                } else if (key === userChoice) {
+                                    cardStyle = "bg-rose-50 border-rose-500 text-rose-950 font-black shadow-inner ring-1 ring-rose-200";
+                                    iconStyle = "bg-rose-500 text-white border-rose-500";
+                                    iconContent = '<i class="fa-solid fa-xmark"></i>';
+                                } else {
+                                    cardStyle = "opacity-40 bg-slate-50 border-slate-200";
+                                }
+                            }
+
+                            return `
+                                <button id="opt-${q.id}-${key}" 
+                                        onclick="selectOption(${q.id}, '${key}')"
+                                        ${pointerEvents}
+                                        class="option-card flex items-center justify-between p-4 rounded-xl border-2 hover:border-indigo-500 ${cardStyle} text-left font-bold text-sm sm:text-base w-full gap-3">
+                                    <span class="english-text flex-1 break-words">${key.toUpperCase()}) ${text}</span>
+                                    <span id="icon-${q.id}-${key}" class="w-5.5 h-5.5 rounded-full border-2 flex items-center justify-center text-xs shrink-0 ${iconStyle}">${iconContent}</span>
+                                </button>
+                            `;
+                        }).join('')}
+                    </div>
+
+                    <!-- Explanation Block (Hidden until answered) -->
+                    <!-- Highly legible font and colors for direct explanation feedback -->
+                    <div id="explain-box-${q.id}" class="${isAnswered ? '' : 'hidden'} mt-5 sm:mt-7 p-5 rounded-xl border-2 leading-relaxed text-sm sm:text-base ${
+                        isAnswered && userProgress[q.id].isCorrect 
+                            ? 'bg-emerald-50/70 border-emerald-200 text-emerald-950 font-medium' 
+                            : 'bg-rose-50/70 border-rose-200 text-rose-950 font-medium'
+                    }">
+                        <div class="flex items-center gap-2 mb-3 font-black text-sm sm:text-base md:text-lg ${
+                            isAnswered && userProgress[q.id].isCorrect ? 'text-emerald-800' : 'text-rose-800'
+                        }" id="explain-title-${q.id}">
+                            ${isAnswered 
+                                ? (userProgress[q.id].isCorrect 
+                                    ? '<i class="fa-solid fa-circle-check text-base sm:text-xl"></i> إجابة صحيحة وممتازة! ✨' 
+                                    : `<i class="fa-solid fa-circle-xmark text-base sm:text-xl"></i> إجابة خاطئة! الخيار الصحيح هو (${q.correct.toUpperCase()})`)
+                                : ''
+                            }
+                        </div>
+                        <p class="arabic-text leading-relaxed font-bold" id="explain-text-${q.id}">
+                            ${q.explanation}
+                        </p>
+                    </div>
+                `;
+                container.appendChild(questionCard);
+            });
+            updateStats();
+        }
+
+        // Toggle translation box visibility
+        function toggleTranslation(id) {
+            const transBox = document.getElementById(`trans-box-${id}`);
+            transBox.classList.toggle('hidden');
+        }
+
+        // Handle option selection
+        function selectOption(qId, selectedKey) {
+            if (userProgress[qId]) return;
+
+            const question = questionsData.find(q => q.id === qId);
+            const isCorrect = (selectedKey === question.correct);
+
+            userProgress[qId] = {
+                selected: selectedKey,
+                isCorrect: isCorrect
+            };
+
+            const ribbon = document.getElementById(`ribbon-${qId}`);
+            const explainBox = document.getElementById(`explain-box-${qId}`);
+            const explainTitle = document.getElementById(`explain-title-${qId}`);
+
+            Object.keys(question.options).forEach(key => {
+                const card = document.getElementById(`opt-${qId}-${key}`);
+                const icon = document.getElementById(`icon-${qId}-${key}`);
+
+                card.style.pointerEvents = 'none';
+
+                if (key === question.correct) {
+                    card.className = "option-card flex items-center justify-between p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-950 font-black text-sm sm:text-base w-full gap-3 shadow-inner ring-1 ring-emerald-200";
+                    icon.className = "w-5.5 h-5.5 rounded-full bg-emerald-500 text-white flex items-center justify-center border-2 border-emerald-500 shrink-0";
+                    icon.innerHTML = '<i class="fa-solid fa-check"></i>';
+                } else if (key === selectedKey) {
+                    card.className = "option-card flex items-center justify-between p-4 rounded-xl border-2 border-rose-500 bg-rose-50 text-rose-950 font-black text-sm sm:text-base w-full gap-3 shadow-inner ring-1 ring-rose-200";
+                    icon.className = "w-5.5 h-5.5 rounded-full bg-rose-500 text-white flex items-center justify-center border-2 border-rose-500 shrink-0";
+                    icon.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+                } else {
+                    card.classList.add('opacity-40');
+                }
+            });
+
+            explainBox.classList.remove('hidden');
+            if (isCorrect) {
+                ribbon.className = "absolute top-0 left-0 w-2.5 h-full bg-emerald-500";
+                explainBox.className = "mt-5 sm:mt-7 p-5 rounded-xl border-2 border-emerald-200 leading-relaxed text-sm sm:text-base bg-emerald-50/70 text-emerald-950";
+                explainTitle.className = "text-emerald-800 flex items-center gap-2 arabic-text font-black text-sm sm:text-base md:text-lg";
+                explainTitle.innerHTML = '<i class="fa-solid fa-circle-check text-base sm:text-xl"></i> إجابة صحيحة وممتازة! ✨';
+            } else {
+                ribbon.className = "absolute top-0 left-0 w-2.5 h-full bg-rose-500";
+                explainBox.className = "mt-5 sm:mt-7 p-5 rounded-xl border-2 border-rose-200 leading-relaxed text-sm sm:text-base bg-rose-50/70 text-rose-950";
+                explainTitle.className = "text-rose-800 flex items-center gap-2 arabic-text font-black text-sm sm:text-base md:text-lg";
+                explainTitle.innerHTML = `<i class="fa-solid fa-circle-xmark text-base sm:text-xl"></i> إجابة خاطئة! الخيار الصحيح هو (${question.correct.toUpperCase()})`;
+            }
+
+            updateStats();
+        }
+
+        // Update overall exam statistics
+        function updateStats() {
+            let correctCount = 0;
+            let answeredCount = 0;
+
+            Object.keys(userProgress).forEach(qId => {
+                answeredCount++;
+                if (userProgress[qId].isCorrect) {
+                    correctCount++;
+                }
+            });
+
+            const wrongCount = answeredCount - correctCount;
+            const scorePercentage = answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) : 0;
+
+            document.getElementById('stat-correct').innerText = correctCount;
+            document.getElementById('stat-wrong').innerText = wrongCount;
+            document.getElementById('stat-score').innerText = `${scorePercentage}%`;
+            document.getElementById('progress-text').innerText = `تم حل ${answeredCount} من 60`;
+        }
+
+        // Reset whole exam
+        function resetExam() {
+            userProgress = {};
+            loadExam();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+
+        /* ================= DHIKR SYSTEM (بابل الأذكار المبتكرة) ================= */
+        let dhikrInterval = null;
+
+        function initDhikrSystem() {
+            changeDhikrText();
+            // Trigger bubble text rotation and ensure appearance every 2 minutes (120000 ms)
+            dhikrInterval = setInterval(() => {
+                const bubble = document.getElementById('dhikr-bubble');
+                changeDhikrText();
+                bubble.style.display = 'flex';
+                bubble.style.opacity = '1';
+                bubble.style.transform = 'scale(1)';
+            }, 120000);
+        }
+
+        function changeDhikrText() {
+            const randomIndex = Math.floor(Math.random() * dhikrMessages.length);
+            document.getElementById('dhikr-text').innerText = dhikrMessages[randomIndex];
+        }
+
+        function dismissDhikr(event) {
+            event.stopPropagation();
+            const bubble = document.getElementById('dhikr-bubble');
+            bubble.style.transition = "all 0.3s ease";
+            bubble.style.opacity = '0';
+            bubble.style.transform = 'translateY(50px) scale(0.9)';
+            
+            setTimeout(() => {
+                bubble.style.display = 'none';
+            }, 300);
+        }
+
+        document.getElementById('dhikr-bubble').addEventListener('click', function(e) {
+            changeDhikrText();
+            dismissDhikr(e);
+        });
+
+    </script>
+</body>
+</html>
